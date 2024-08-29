@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Managers;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
 public class LauncherScript : MonoBehaviourPunCallbacks
 {
-    SceneButtonManager sceneButtonManager;
+    MainMenuManager m_MainMenuManager;
 
     public void Awake()
     {
-        sceneButtonManager = GetComponent<SceneButtonManager>();    
+        m_MainMenuManager = GetComponent<MainMenuManager>();    
     }
 
     public void ConnectToMasterServer()
@@ -28,7 +29,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("Joined Lobby!", this);
-        sceneButtonManager.Connected();
+        //sceneButtonManager.Connected();
     }
 
     public override void OnDisconnected(DisconnectCause cause)

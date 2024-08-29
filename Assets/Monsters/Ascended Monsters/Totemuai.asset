@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Totemuai
   m_EditorClassIdentifier: 
   name: Totemuai
+  <ChimericIndex>k__BackingField: 12
   baseSprite: {fileID: 21300000, guid: 830ae9c569746284ab3334893a6bef0d, type: 3}
   monsterSelectCard: {fileID: 944453048536779737, guid: 3d1f2da5b6240f446935a2743ad23b95, type: 3}
   monsterAscensionPhase: 1

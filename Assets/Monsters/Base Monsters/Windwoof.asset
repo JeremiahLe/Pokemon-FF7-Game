@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Windwoof
   m_EditorClassIdentifier: 
   name: Windwoof
+  <ChimericIndex>k__BackingField: 1
   baseSprite: {fileID: 21300000, guid: ba3d41af14ff2ff498f55ce5d95e1b8a, type: 3}
   monsterSelectCard: {fileID: 8232631048141423173, guid: d203e463f47a4294f94b9ac50bcf06d1, type: 3}
   monsterAscensionPhase: 0
@@ -20,7 +21,7 @@ MonoBehaviour:
   monsterSubElement: {fileID: 11400000, guid: 4262258355edf6045bbabf5730d8e416, type: 2}
   aiType: 0
   aiLevel: 3
-  monsterFlavourText: Windwoof often roam and hunt in packs across the open plains.
+  monsterFlavourText: Windwoof reside and hunt in packs across the open windy plains.
     They are generally docile and loving.
   monsterAbility: {fileID: 11400000, guid: cb4db506102fe30479e4bf2a2096f8bf, type: 2}
   listOfPotentialMonsterAbilities:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Ziegesaw
   m_EditorClassIdentifier: 
   name: Ziegesaw
+  <ChimericIndex>k__BackingField: 5
   baseSprite: {fileID: 21300000, guid: e00095bcb3786454d99197ea4e9c5e5b, type: 3}
   monsterSelectCard: {fileID: 3141244009117720069, guid: f7652714fa80c13498a8f9a3e0a18986, type: 3}
   monsterAscensionPhase: 1

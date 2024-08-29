@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: FAE_Willow_A_Billboard
   m_Shader: {fileID: 4800000, guid: da2ba458c5917bc47b8412af914a8f11, type: 3}
-  m_ShaderKeywords: EFFECT_HUE_VARIATION GEOM_TYPE_LEAF _ALPHATEST_ON _USELIGHTCOLOR_ON
+  m_ShaderKeywords: EFFECT_HUE_VARIATION ETC1_EXTERNAL_ALPHA GEOM_TYPE_LEAF _ALPHATEST_ON
+    _USELIGHTCOLOR_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -184,3 +185,4 @@ Material:
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
     - _Variationcolor: {r: 1, g: 0.80689657, b: 0, a: 0}
     - _WindDirection: {r: 0.93536794, g: 0, b: 0.35367614, a: 0}
+  m_BuildTextureStacks: []

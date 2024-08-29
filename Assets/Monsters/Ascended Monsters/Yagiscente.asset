@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Yagiscente
   m_EditorClassIdentifier: 
   name: Yagiscente
+  <ChimericIndex>k__BackingField: 6
   baseSprite: {fileID: 21300000, guid: 0ecc6650b62f3524694e91de94ca81e0, type: 3}
   monsterSelectCard: {fileID: 3805095256249948082, guid: d8eaa8cd5df855a458bbf35c0ede0207, type: 3}
   monsterAscensionPhase: 1

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Vile
   m_EditorClassIdentifier: 
   name: Vile
+  <ChimericIndex>k__BackingField: 7
   baseSprite: {fileID: 21300000, guid: 3e26b457512cf8340b97f1fbcf5d2720, type: 3}
   monsterSelectCard: {fileID: 6047891137826048154, guid: a2c2a19d4dfe8564189910601d5a222d, type: 3}
   monsterAscensionPhase: 0
@@ -20,8 +21,8 @@ MonoBehaviour:
   monsterSubElement: {fileID: 11400000, guid: 30dbb69d475d839429d931735d03407f, type: 2}
   aiType: 0
   aiLevel: 3
-  monsterFlavourText: Vile are the result of vicious lab experimentation. Dangerous
-    toxins flow through its veins.
+  monsterFlavourText: Chemically modified creatures. Their tube-like appendages run
+    deadly toxins.
   monsterAbility: {fileID: 11400000, guid: 451ee0c393b4781488b125919853ef30, type: 2}
   listOfPotentialMonsterAbilities:
   - {fileID: 11400000, guid: 451ee0c393b4781488b125919853ef30, type: 2}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Fueguy
   m_EditorClassIdentifier: 
   name: Fueguy
+  <ChimericIndex>k__BackingField: 11
   baseSprite: {fileID: 21300000, guid: 4bdc5978122ca10408738df0a61dd367, type: 3}
   monsterSelectCard: {fileID: 3536479361002499062, guid: 108cb26cfcff1164baeefff87e8efdb8, type: 3}
   monsterAscensionPhase: 1

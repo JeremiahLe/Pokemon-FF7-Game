@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Linq;
 using System.Threading.Tasks;
+using Managers;
+using UnityEngine.Serialization;
 using static Monster;
 
 public class AdventureManager : MonoBehaviour
@@ -83,7 +85,7 @@ public class AdventureManager : MonoBehaviour
     [Title("Pre-Adventure Components")]
     public static GameObject thisManager;
     public GameObject ConfirmAdventureMenu;
-    public SceneButtonManager sceneButtonManager;
+    [FormerlySerializedAs("sceneButtonManager")] public MainMenuManager mainMenuManager;
 
     [Title("SFX")]
     public AudioSource GameManagerAudioSource;
@@ -224,7 +226,7 @@ public class AdventureManager : MonoBehaviour
     {
         thisManager = gameObject;
         
-        sceneButtonManager = GetComponent<SceneButtonManager>();
+        mainMenuManager = GetComponent<MainMenuManager>();
         //GameManagerAudioSource = GetComponent<AudioSource>();
         adventureBegin = false;
         CopyDefaultModifierList();
@@ -454,13 +456,13 @@ public class AdventureManager : MonoBehaviour
                 DontDestroyOnLoad(gameObject);
                 SceneManager.sceneLoaded += OnSceneLoaded;
                 adventureBegin = false;
-                sceneButtonManager.GoToSceneCoroutine("BasicAdventureScene");
+                mainMenuManager.GoToSceneCoroutine("BasicAdventureScene");
                 break;
 
             case "Basic Adventure Hard":
                 DontDestroyOnLoad(gameObject);
                 SceneManager.sceneLoaded += OnSceneLoaded;
-                sceneButtonManager.GoToSceneCoroutine("BasicAdventureHardScene");
+                mainMenuManager.GoToSceneCoroutine("BasicAdventureHardScene");
                 break;
 
             default:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Frejeow
   m_EditorClassIdentifier: 
   name: Frejeow
+  <ChimericIndex>k__BackingField: 25
   baseSprite: {fileID: 21300000, guid: 0d5982a703e6a5b4288fa42f00698c7d, type: 3}
   monsterSelectCard: {fileID: 2871371210668926895, guid: 557a4ed3a29acbd46841b0b4ec6181be, type: 3}
   monsterAscensionPhase: 0
@@ -20,7 +21,7 @@ MonoBehaviour:
   monsterSubElement: {fileID: 11400000, guid: 30dbb69d475d839429d931735d03407f, type: 2}
   aiType: 0
   aiLevel: 1
-  monsterFlavourText: Frejeow often take naps in their own snow dens.
+  monsterFlavourText: It's incredibly rare to see a Frejeow outside of its snow den.
   monsterAbility: {fileID: 11400000, guid: c01f1acd497c8564181703f6de555cce, type: 2}
   listOfPotentialMonsterAbilities:
   - {fileID: 11400000, guid: c01f1acd497c8564181703f6de555cce, type: 2}

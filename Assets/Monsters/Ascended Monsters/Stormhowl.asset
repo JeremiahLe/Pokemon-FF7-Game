@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Stormhowl
   m_EditorClassIdentifier: 
   name: Stormhowl
+  <ChimericIndex>k__BackingField: 2
   baseSprite: {fileID: 21300000, guid: 19473c3289a779a4ca2d8d3e24b7b7e9, type: 3}
   monsterSelectCard: {fileID: 8019009963267078014, guid: 06739be84fb2f314a8e2c8297f9eda7b, type: 3}
   monsterAscensionPhase: 1
@@ -20,8 +21,7 @@ MonoBehaviour:
   monsterSubElement: {fileID: 11400000, guid: dfae7defb3df0564dad46becd5668609, type: 2}
   aiType: 0
   aiLevel: 0
-  monsterFlavourText: Stormhowl have a code of honor, and strike with valourous bolts
-    of lightning.
+  monsterFlavourText: Stormhowl wield lightning and have knightly dispositions.
   monsterAbility: {fileID: 11400000, guid: 587c1df7c95850d42a61fefe2f135482, type: 2}
   listOfPotentialMonsterAbilities:
   - {fileID: 11400000, guid: 587c1df7c95850d42a61fefe2f135482, type: 2}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Embear
   m_EditorClassIdentifier: 
   name: Embear
+  <ChimericIndex>k__BackingField: 13
   baseSprite: {fileID: 21300000, guid: e80d7720031c1f14e90f6146e270fd7c, type: 3}
   monsterSelectCard: {fileID: 6628221711228931141, guid: 10d007b8697c9e54483aca229e836080, type: 3}
   monsterAscensionPhase: 0

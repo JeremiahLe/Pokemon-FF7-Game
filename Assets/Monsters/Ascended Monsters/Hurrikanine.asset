@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Hurrikanine
   m_EditorClassIdentifier: 
   name: Hurrikanine
+  <ChimericIndex>k__BackingField: 3
   baseSprite: {fileID: 21300000, guid: d4389a02943c8e049a1ed15dbeee46ab, type: 3}
   monsterSelectCard: {fileID: 8057040272594170123, guid: 9538262d9f64f594eb44f573d19dc7a0, type: 3}
   monsterAscensionPhase: 1
@@ -20,8 +21,8 @@ MonoBehaviour:
   monsterSubElement: {fileID: 11400000, guid: e50298cfd797133489b34af0beff2923, type: 2}
   aiType: 0
   aiLevel: 0
-  monsterFlavourText: Hurrikanine reside in the heavenly space in the eye of storms,
-    often creating them themselves with simple wing movements.
+  monsterFlavourText: Hurrikanine reside in the heavenly space in the eyes of storms,
+    even creating them themselves with simple wing movements.
   monsterAbility: {fileID: 11400000, guid: cb4db506102fe30479e4bf2a2096f8bf, type: 2}
   listOfPotentialMonsterAbilities:
   - {fileID: 11400000, guid: cb4db506102fe30479e4bf2a2096f8bf, type: 2}

@@ -11,6 +11,7 @@ public class Monster : ScriptableObject
     // The monster's name and sprite
     [Title("Monster Identifier")]
     public new string name;
+    [field: SerializeField] public int ChimericIndex { get; private set; }
 
     [AssetSelector(Paths = "Assets/Sprites/Renders")]
     [PreviewField(150)]
@@ -224,5 +225,4 @@ public class Monster : ScriptableObject
     [Range(-10, 25)] public int critChanceGrowth;
     [EnableIf("monsterAscensionPhase", MonsterAscensionPhase.Ascended)]
     [Range(-10, 25)] public int bonusAccuracyGrowth;
-
 }

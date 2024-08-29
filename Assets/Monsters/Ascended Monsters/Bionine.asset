@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bionine
   m_EditorClassIdentifier: 
   name: Bionine
+  <ChimericIndex>k__BackingField: 8
   baseSprite: {fileID: 21300000, guid: a6b376644589ef34895ee43b49996650, type: 3}
   monsterSelectCard: {fileID: 5068056384497296617, guid: 86597f52c192f9649b6b8eaee4dce362, type: 3}
   monsterAscensionPhase: 1
