@@ -76,8 +76,8 @@
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.1.0",
-        "com.unity.render-pipelines.core": "10.3.2",
-        "com.unity.shadergraph": "10.3.2"
+        "com.unity.shadergraph": "10.3.2",
+        "com.unity.render-pipelines.core": "10.3.2"
       },
       "url": "https://packages.unity.com"
     },
@@ -93,8 +93,8 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.render-pipelines.core": "10.3.2",
-        "com.unity.searcher": "4.3.1"
+        "com.unity.searcher": "4.3.1",
+        "com.unity.render-pipelines.core": "10.3.2"
       },
       "url": "https://packages.unity.com"
     },
@@ -110,7 +110,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.1",
+      "version": "3.0.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -123,9 +123,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
