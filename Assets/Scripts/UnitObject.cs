@@ -1,0 +1,63 @@
+using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+public class UnitObject : MonoBehaviour
+{
+    [field: SerializeField, Title("ID")] 
+    public UnitOrientation unitSideOfField;
+    [field: SerializeField] public UnitData UnitData { get; private set; }
+
+    // Components
+    public SpriteRenderer SpriteRenderer { get; private set; }
+    public SpriteShadow SpriteShadow { get; private set; }
+    public CameraBillboard CameraBillboard { get; private set; }
+    public UnitIcon BoundUnitIcon { get; set; }
+    
+    private void OnValidate()
+    {
+        ValidateEditorComponents();
+    }
+    
+    private void ValidateEditorComponents()
+    {
+        if (!TryGetComponent<SpriteRenderer>(out var spriteRenderer)) return;
+        
+        SpriteRenderer = spriteRenderer;
+            
+        SpriteRenderer.flipX = UnitOrientationExtension.GetUnitOrientation(unitSideOfField);
+            
+        if (UnitData != null)
+        {
+            SpriteRenderer.sprite = UnitData.UnitBaseSprite;
+        }
+    }
+
+    private void Awake()
+    {
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteShadow = GetComponent<SpriteShadow>();
+        CameraBillboard = GetComponent<CameraBillboard>();
+    }
+
+    public void InitializeUnitData()
+    {
+        UnitData = Instantiate(UnitData);
+        UnitData.MaxHealth = UnitData.BaseHealth;
+        UnitData.CurrentHealth = UnitData.MaxHealth;
+    }
+
+    public void OnMouseDown()
+    {
+        CombatManagerSingleton.CombatManager().DebugTargetUnitObject = this;
+    }
+
+    public float ReceiveDamage(float damagedReceived)
+    {
+        UnitData.CurrentHealth += damagedReceived;
+        
+        BoundUnitIcon.AnimationTextDamageReceivedStart();
+
+        return UnitData.CurrentHealth;
+    }
+}

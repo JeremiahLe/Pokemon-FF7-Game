@@ -16,7 +16,13 @@ public class UnitData : ScriptableObject
     
     [field: SerializeField] public List<WeaponType> EquippableWeapons { get; private set; }
     
-    [field: SerializeField, Title("Combat")] public float BaseHealth { get; private set; }
-    public float CurrentHealth { get; private set; }
-    public float MaxHealth { get; private set; }
+    [field: SerializeField, Title("Combat")] public float BaseHealth { get; internal set; }
+    public float CurrentHealth
+    {
+        get => _currentHealth;
+        internal set => _currentHealth = Mathf.Clamp(value, 0, MaxHealth);
+    }
+    private float _currentHealth;
+
+    public float MaxHealth { get; internal set; }
 }
