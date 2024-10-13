@@ -7,6 +7,7 @@ public class HUDManager : MonoBehaviour
 {
     [SerializeField] private GameObject _unitIconPrefab;
     [SerializeField] private GameObject _unitIconHolder;
+    [SerializeField] private GameObject _enemyUnitIconHolder;
 
     private List<UnitIcon> UnitIcons = new List<UnitIcon>();
     
@@ -19,14 +20,26 @@ public class HUDManager : MonoBehaviour
     {
         foreach (var unit in CombatManagerSingleton.CombatManager().UnitObjectsInScene)
         {
-            if (unit.unitSideOfField != UnitOrientation.Left) continue;
-            
-            var icon = Instantiate(_unitIconPrefab, _unitIconHolder.transform);
+            var icon = Instantiate(_unitIconPrefab, GetUnitIconHolder(unit.unitSideOfField));
             var iconComponent = icon.GetComponent<UnitIcon>();
             iconComponent.InitializeData(unit.UnitData);
 
             unit.BoundUnitIcon = iconComponent;
             UnitIcons.Add(iconComponent);
+        }
+    }
+
+    private Transform GetUnitIconHolder(UnitOrientation unitOrientation)
+    {
+        switch (unitOrientation)
+        {
+            case UnitOrientation.Right:
+                return _enemyUnitIconHolder.transform;
+            
+            case UnitOrientation.Left:
+            case UnitOrientation.Center:
+            default:
+                return _unitIconHolder.transform;
         }
     }
 }

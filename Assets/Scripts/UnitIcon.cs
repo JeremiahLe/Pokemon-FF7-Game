@@ -18,6 +18,7 @@ public class UnitIcon : MonoBehaviour
 
     [SerializeField] private Color _baseHealthbarColor;
     [SerializeField] private Color _lowestHealthBarColor;
+    [SerializeField] private bool _shouldGradientHealthColor;
     
     private static readonly int TextDamageReceived = Animator.StringToHash("TextDamageReceived");
     
@@ -45,7 +46,7 @@ public class UnitIcon : MonoBehaviour
 
         _healthbarSlider.value = UnitData.CurrentHealth;
 
-        _healthbarImageFill.color = Color.Lerp(_lowestHealthBarColor, _baseHealthbarColor, healthPercentage);
+        if (_shouldGradientHealthColor) _healthbarImageFill.color = Color.Lerp(_lowestHealthBarColor, _baseHealthbarColor, healthPercentage);
         
         UpdateHealthText();
 
