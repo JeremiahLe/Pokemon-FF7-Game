@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 691896d5ef73c7e46b84e6060b7c1d57, type: 3}
-  m_Name: Stone
+  m_Name: Ice
   m_EditorClassIdentifier: 
-  element: 11
-  listOfWeaknesses: 01000000020000000c00000008000000
-  listOfResistances: 000000000a000000070000000b000000
+  affinityType: 5
+  AffinityWeaknesses: 01000000
+  AffinityResistances: 0500000002000000

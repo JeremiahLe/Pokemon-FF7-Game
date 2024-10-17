@@ -6,7 +6,7 @@ public class UnitClass : ScriptableObject
 {
     public enum UnitCombatClass
     {
-        Squire, Mage, Scout, Thief
+        Fighter, Mage, Ranger, Rogue, Tank
     };
 
     public UnitCombatClass CombatClass;

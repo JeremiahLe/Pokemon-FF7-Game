@@ -8,7 +8,7 @@ public class AffinityClass : ScriptableObject
 {
     public enum AffinityType
     {
-        Wind, Fire, Water, Earth, Electric, Ice, Mystic, Light, Dark 
+        Wind, Fire, Water, Earth, Lightning, Ice, Mystic, Light, Shadow, Physical
     };
     public AffinityType affinityType;
 

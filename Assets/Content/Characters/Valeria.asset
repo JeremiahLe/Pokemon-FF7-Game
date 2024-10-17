@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <UnitName>k__BackingField: Valeria
   <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: b2ceff379b65b5849b1efc627315a450, type: 3}
-  <Affinities>k__BackingField: []
   <UnitBaseCombatClass>k__BackingField: 0
+  <UnitPrimaryResource>k__BackingField: 0
+  UseUniqueResource: 0
+  <Affinities>k__BackingField:
+  - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
+  - {fileID: 11400000, guid: 849bcf05d4532a94c9699ed764f785a1, type: 2}
   <EquippableWeapons>k__BackingField: 00000000
   <BaseHealth>k__BackingField: 103

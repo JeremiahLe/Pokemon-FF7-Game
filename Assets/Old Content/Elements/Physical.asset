@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 691896d5ef73c7e46b84e6060b7c1d57, type: 3}
-  m_Name: Neutral
+  m_Name: Physical
   m_EditorClassIdentifier: 
-  element: 5
-  listOfWeaknesses: 
-  listOfResistances: 
+  affinityType: 9
+  AffinityWeaknesses: 06000000
+  AffinityResistances: 

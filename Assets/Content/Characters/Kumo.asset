@@ -10,11 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d05acfa9b7e6c049a8bd0b1cad61075, type: 3}
-  m_Name: Lily
+  m_Name: Kumo
   m_EditorClassIdentifier: 
-  <UnitName>k__BackingField: Lily
-  <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: 81e6bfa419ec675419d100d1be473e2a, type: 3}
-  <Affinities>k__BackingField: []
+  <UnitName>k__BackingField: Kumo
+  <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: 866d122c237629a4c86e540271590542, type: 3}
   <UnitBaseCombatClass>k__BackingField: 0
-  <EquippableWeapons>k__BackingField: 
-  <BaseHealth>k__BackingField: 37
+  <UnitPrimaryResource>k__BackingField: 0
+  UseUniqueResource: 0
+  <Affinities>k__BackingField:
+  - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
+  <EquippableWeapons>k__BackingField: 00000000
+  <BaseHealth>k__BackingField: 40
