@@ -8,6 +8,7 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject _unitIconPrefab;
     [SerializeField] private GameObject _unitIconHolder;
     [SerializeField] private GameObject _enemyUnitIconHolder;
+    [SerializeField] private UnitHoverIcon _UnitHoverIcon;
 
     private List<UnitIcon> UnitIcons = new List<UnitIcon>();
     

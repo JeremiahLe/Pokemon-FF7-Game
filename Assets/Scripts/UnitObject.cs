@@ -13,6 +13,8 @@ public class UnitObject : MonoBehaviour
     public SpriteShadow SpriteShadow { get; private set; }
     public CameraBillboard CameraBillboard { get; private set; }
     public UnitIcon BoundUnitIcon { get; set; }
+
+    public static event Action<UnitObject> OnUnitObjectHovered;
     
     private void OnValidate()
     {
@@ -45,6 +47,11 @@ public class UnitObject : MonoBehaviour
         UnitData = Instantiate(UnitData);
         UnitData.MaxHealth = UnitData.BaseHealth;
         UnitData.CurrentHealth = UnitData.MaxHealth;
+    }
+
+    public void OnMouseEnter()
+    {
+        OnUnitObjectHovered?.Invoke(this);
     }
 
     public void OnMouseDown()
