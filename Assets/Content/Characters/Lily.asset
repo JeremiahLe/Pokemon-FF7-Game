@@ -15,8 +15,8 @@ MonoBehaviour:
   <UnitName>k__BackingField: Lily
   <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: 81e6bfa419ec675419d100d1be473e2a, type: 3}
   <UnitBaseCombatClass>k__BackingField: 3
-  <UnitPrimaryResource>k__BackingField: 3
-  UseUniqueResource: 0
+  <UnitPrimaryResource>k__BackingField: 0
+  UseUniqueResource: 1
   <Affinities>k__BackingField:
   - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
   <EquippableWeapons>k__BackingField: 00000000

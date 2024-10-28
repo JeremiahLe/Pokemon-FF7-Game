@@ -58,13 +58,11 @@ public class CombatManager : MonoBehaviour
     private void DealDamage()
     {
         DebugTargetUnitObject.ReceiveDamage(-20f);
-        DebugTargetUnitObject.BoundUnitIcon.UpdateHealthbar();
     }
     
     [Button, DisableInEditorMode]
     private void HealDamage()
     {
         DebugTargetUnitObject.ReceiveDamage(20f);
-        DebugTargetUnitObject.BoundUnitIcon.UpdateHealthbar();
     }
 }

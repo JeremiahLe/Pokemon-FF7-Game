@@ -1,5 +1,4 @@
-using System.Collections;
-using TMPro;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,71 +7,91 @@ public class UnitIcon : MonoBehaviour
     public UnitData UnitData;
 
     [SerializeField] private Image _unitIconSprite;
-    [SerializeField] private Slider _healthbarSlider;
-    [SerializeField] private Slider _healthbarBackgroundSlider;
-    
-    [SerializeField] private Image _healthbarImageFill;
-    [SerializeField] private Image _healthbarBackgroundFill;
-    
-    [SerializeField] TextMeshProUGUI _healthValueText;
-
-    [SerializeField] private Color _baseHealthbarColor;
-    [SerializeField] private Color _lowestHealthBarColor;
-    [SerializeField] private bool _shouldGradientHealthColor;
+    [field: SerializeField] public ResourceBar HealthBar { get; private set; }
+    [field: SerializeField] public ResourceBar StaminaBar { get; private set; }
+    [field: SerializeField] public ResourceBar ManaBar { get; private set; }
     
     private static readonly int TextDamageReceived = Animator.StringToHash("TextDamageReceived");
+
+    private void Awake()
+    {
+        UnitObject.OnResourceUpdated += UpdateResourceBar;
+    }
     
     public void InitializeData(UnitData unitData)
     {
         UnitData = unitData;
         
         _unitIconSprite.sprite = UnitData.UnitBaseSprite;
+
+        InitializeResourceBars();
+    }
+
+    private void InitializeResourceBars()
+    {
+        HealthBar.InitializeResourceBar(UnitData.MaxHealth);
+        HealthBar.UpdateResourceBar(UnitData.CurrentHealth, UnitData.MaxHealth, true);
+    }
+
+    private void UpdateResourceBar(ResourceBar resourceBar, UnitData unitData, bool isInit = false)
+    {
+        if (unitData != UnitData) return;
         
-        InitializeHealthbar();
+        resourceBar.UpdateResourceBar(GetCurrentResourceAmount(resourceBar), GetMaxResourceAmount(resourceBar), isInit);
     }
 
-    public void InitializeHealthbar()
+    private float GetCurrentResourceAmount(ResourceBar resourceBar)
     {
-        _healthbarSlider.maxValue = UnitData.MaxHealth;
-        _healthbarBackgroundSlider.maxValue = UnitData.MaxHealth;
-        _healthbarBackgroundSlider.value = _healthbarBackgroundSlider.maxValue;
-        
-        UpdateHealthbar();
-    }
+        switch (resourceBar.CurrentResourceBarType)
+        {
+            case ResourceBar.ResourceBarType.Health:
+                return UnitData.CurrentHealth;
+            
+            case ResourceBar.ResourceBarType.Mana:
+                break;
+            
+            case ResourceBar.ResourceBarType.Stamina:
+                break;
+            
+            case ResourceBar.ResourceBarType.Ammo:
+                break;
+            
+            case ResourceBar.ResourceBarType.Shield:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-    public void UpdateHealthbar()
+        return 0;
+    }
+    
+    private float GetMaxResourceAmount(ResourceBar resourceBar)
     {
-        var healthPercentage = UnitData.CurrentHealth / UnitData.MaxHealth;
+        switch (resourceBar.CurrentResourceBarType)
+        {
+            case ResourceBar.ResourceBarType.Health:
+                return UnitData.MaxHealth;
+            
+            case ResourceBar.ResourceBarType.Mana:
+                break;
+            
+            case ResourceBar.ResourceBarType.Stamina:
+                break;
+            
+            case ResourceBar.ResourceBarType.Ammo:
+                break;
+            
+            case ResourceBar.ResourceBarType.Shield:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-        _healthbarSlider.value = UnitData.CurrentHealth;
-
-        if (_shouldGradientHealthColor) _healthbarImageFill.color = Color.Lerp(_lowestHealthBarColor, _baseHealthbarColor, healthPercentage);
-        
-        UpdateHealthText();
-
-        StartCoroutine(FadeHealthbarBackgroundFill());
+        return 0;
     }
-
-    public void UpdateHealthText()
-    {
-        _healthValueText.text = $"{Mathf.Max(0, UnitData.CurrentHealth)}/{UnitData.MaxHealth}";
-    }
-
-    private IEnumerator FadeHealthbarBackgroundFill()
-    {
-        _healthbarBackgroundFill.CrossFadeAlpha(0, .75f, false);
-
-        yield return new WaitForSeconds(0.75f);
-        
-        AdjustHealthbarBackgroundFill();
-    }
-
-    private void AdjustHealthbarBackgroundFill()
-    {
-        _healthbarBackgroundSlider.value = UnitData.CurrentHealth;
-        _healthbarBackgroundFill.CrossFadeAlpha(1, 0.1f, false);
-    }
-
+    
     public void AnimationTextDamageReceivedStart()
     {
         GetComponent<Animator>().SetBool(TextDamageReceived, true);  

@@ -15,6 +15,8 @@ public class UnitObject : MonoBehaviour
     public UnitIcon BoundUnitIcon { get; set; }
 
     public static event Action<UnitObject> OnUnitObjectHovered;
+
+    public static event Action<ResourceBar, UnitData, bool> OnResourceUpdated;
     
     private void OnValidate()
     {
@@ -62,6 +64,8 @@ public class UnitObject : MonoBehaviour
     public float ReceiveDamage(float damagedReceived)
     {
         UnitData.CurrentHealth += damagedReceived;
+        
+        OnResourceUpdated?.Invoke(BoundUnitIcon.HealthBar, UnitData, false);
         
         BoundUnitIcon.AnimationTextDamageReceivedStart();
 
