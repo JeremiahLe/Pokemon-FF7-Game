@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class CameraPanning : MonoBehaviour
 {
+    [Tooltip("Is camera panning enabled by hovering the edge enabled?")]
+    public bool cameraPanningEnabled = true;
+    
     [Tooltip("How fast does the camera pan left/right?")] 
     public float sensitivity = 2.5f;
     
@@ -22,15 +25,18 @@ public class CameraPanning : MonoBehaviour
 
     void LateUpdate()
     {
-        if (Input.mousePosition.x>Screen.width-screenEdge && currentXPosition < initialXPosition + cameraXBounds)
+        if (!cameraPanningEnabled) return;
+
+        if (Input.mousePosition.x > Screen.width - screenEdge &&
+            currentXPosition < initialXPosition + cameraXBounds)
         {
             currentXPosition += sensitivity * Time.deltaTime;
         }
-        else if(Input.mousePosition.x<screenEdge && currentXPosition > initialXPosition - cameraXBounds)
+        else if (Input.mousePosition.x < screenEdge && currentXPosition > initialXPosition - cameraXBounds)
         {
             currentXPosition -= sensitivity * Time.deltaTime;
         }
-        
+
         transform.position = new Vector3(currentXPosition, transform.position.y, transform.position.z);
     }
 }

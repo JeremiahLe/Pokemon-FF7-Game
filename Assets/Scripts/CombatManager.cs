@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public static class CombatManagerSingleton
 {
@@ -25,7 +26,17 @@ public class CombatManager : MonoBehaviour
     public UnitObject DebugTargetUnitObject;
     
     private HUDManager _HUDManager;
-
+    
+    #region Debug
+    public float debugAttributeValue = 1f;
+    
+    [Button, DisableInEditorMode]
+    private void ApplyOrHealDamage()
+    {
+        DebugTargetUnitObject.ReceiveDamage(debugAttributeValue);
+    }
+    #endregion
+    
     private void Awake()
     {
         InitializeComponents();
@@ -52,17 +63,5 @@ public class CombatManager : MonoBehaviour
         }
         
         _HUDManager.InitializeComponents();
-    }
-
-    [Button, DisableInEditorMode]
-    private void DealDamage()
-    {
-        DebugTargetUnitObject.ReceiveDamage(-20f);
-    }
-    
-    [Button, DisableInEditorMode]
-    private void HealDamage()
-    {
-        DebugTargetUnitObject.ReceiveDamage(20f);
     }
 }

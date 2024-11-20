@@ -4,19 +4,22 @@ using UnityEngine;
 
 public class UnitObject : MonoBehaviour
 {
-    [field: SerializeField, Title("ID")] 
-    public UnitOrientation unitSideOfField;
-    [field: SerializeField] public UnitData UnitData { get; private set; }
-
     // Components
-    public SpriteRenderer SpriteRenderer { get; private set; }
-    public SpriteShadow SpriteShadow { get; private set; }
+    [field: SerializeField] public SpriteRenderer SpriteRenderer { get; private set; }
     public CameraBillboard CameraBillboard { get; private set; }
     public UnitIcon BoundUnitIcon { get; set; }
+
+    private Animator Animator;
+    
+    private static readonly int TakingDamage = Animator.StringToHash("TakingDamage");
 
     public static event Action<UnitObject> OnUnitObjectHovered;
 
     public static event Action<ResourceBar, UnitData, bool> OnResourceUpdated;
+    
+    [field: SerializeField, Title("ID")] 
+    public UnitOrientation unitSideOfField;
+    [field: SerializeField] public UnitData UnitData { get; private set; }
     
     private void OnValidate()
     {
@@ -25,10 +28,8 @@ public class UnitObject : MonoBehaviour
     
     private void ValidateEditorComponents()
     {
-        if (!TryGetComponent<SpriteRenderer>(out var spriteRenderer)) return;
-        
-        SpriteRenderer = spriteRenderer;
-            
+        if (!SpriteRenderer) return;
+
         SpriteRenderer.flipX = UnitOrientationExtension.GetUnitOrientation(unitSideOfField);
             
         if (UnitData != null)
@@ -39,9 +40,8 @@ public class UnitObject : MonoBehaviour
 
     private void Awake()
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        SpriteShadow = GetComponent<SpriteShadow>();
         CameraBillboard = GetComponent<CameraBillboard>();
+        Animator = GetComponent<Animator>();
     }
 
     public void InitializeUnitData()
@@ -68,7 +68,18 @@ public class UnitObject : MonoBehaviour
         OnResourceUpdated?.Invoke(BoundUnitIcon.HealthBar, UnitData, false);
         
         BoundUnitIcon.AnimationTextDamageReceivedStart();
+        AnimationTakingDamageStart();
 
         return UnitData.CurrentHealth;
+    }
+
+    private void AnimationTakingDamageStart()
+    {
+        Animator.SetBool(TakingDamage, true);
+    }
+    
+    public void AnimationTakingDamageEnd()
+    {
+        Animator.SetBool(TakingDamage, false);
     }
 }

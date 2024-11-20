@@ -21,7 +21,7 @@ public class UnitData : ScriptableObject
     
     [field: SerializeField] public List<WeaponType> EquippableWeapons { get; private set; }
     
-    [field: SerializeField, Title("Combat")] public float BaseHealth { get; internal set; }
+    [field: SerializeField, Header("Combat")] public float BaseHealth { get; internal set; }
     public float CurrentHealth
     {
         get => _currentHealth;
@@ -30,6 +30,9 @@ public class UnitData : ScriptableObject
     private float _currentHealth;
 
     public float MaxHealth { get; internal set; }
+    
+    [field: SerializeField] public float BaseSpeed { get; internal set; }
+    
 
     private void OnValidate()
     {

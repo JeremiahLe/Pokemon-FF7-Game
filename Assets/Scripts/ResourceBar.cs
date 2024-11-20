@@ -15,38 +15,45 @@ public class ResourceBar : MonoBehaviour
     [SerializeField] private Image _resourcebarImageFill;
     [SerializeField] private Image _resourcebarBackgroundFill;
     [SerializeField] private TextMeshProUGUI _resourceValueText;
+
+    [Header("Settings")] 
+    [SerializeField] private float _sliderLerpSpeed = 5f;
     
-    public void InitializeResourceBar(float maxValue)
+    public void InitializeResourceBar(float currentValue, float maxValue)
     {
         _resourcebarSlider.maxValue = maxValue;
         _resourcebarBackgroundSlider.maxValue = maxValue;
-        _resourcebarBackgroundSlider.value = maxValue;
+        
+        _resourcebarBackgroundSlider.value = currentValue;
+        _resourcebarSlider.value = currentValue;
+
+        var resourcePercentage = currentValue / maxValue;
+        _resourcebarImageFill.color = TryLerpResourceFillColor(resourcePercentage);
+        
+        UpdateResourceBarText(currentValue, maxValue);
     }
     
-    public void UpdateResourceBar(float currentAmount, float maxAmount, bool isInit = false)
+    public void UpdateResourceBar(float currentAmount, float maxAmount)
     {
+        Debug.Log("Update resource bar!");
+        StopAllCoroutines();
+
         var resourcePercentage = currentAmount / maxAmount;
         
-        if (_resourcebarSlider.value < currentAmount && !isInit)
+        UpdateResourceBarText(currentAmount, maxAmount);
+        
+        var color = TryLerpResourceFillColor(resourcePercentage);
+        
+        // Resource is going up
+        if (_resourcebarSlider.value < currentAmount)
         {
-            _resourcebarBackgroundSlider.value = currentAmount;
-            
-            UpdateResourceBarText(currentAmount, maxAmount);
-            
-            var color = TryLerpResourceFillColor(resourcePercentage);
-            
-            StartCoroutine(FadeHealthBarForegroundFill(color));
+            StartCoroutine(FadeHealthBarForegroundFill(color, currentAmount));
             
             return;
         }
-
-        _resourcebarSlider.value = currentAmount;
         
-        TryLerpResourceFillColor(resourcePercentage);
-            
-        UpdateResourceBarText(currentAmount, maxAmount);
-
-        StartCoroutine(FadeHealthBarBackgroundFill());
+        // Resource is going down
+        StartCoroutine(FadeHealthBarBackgroundFill(color, currentAmount));
     }
 
     private Color TryLerpResourceFillColor(float resourcePercentage)
@@ -78,10 +85,8 @@ public class ResourceBar : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
-        _resourcebarImageFill.color = Color.Lerp(lowColor, baseColor, resourcePercentage);
 
-        return _resourcebarImageFill.color;
+        return Color.Lerp(lowColor, baseColor, resourcePercentage);
     }
 
     private void UpdateResourceBarText(float amount, float maxAmount)
@@ -89,25 +94,60 @@ public class ResourceBar : MonoBehaviour
         _resourceValueText.text = $"{Mathf.Max(0, amount)}/{maxAmount}";
     }
 
-    private IEnumerator FadeHealthBarBackgroundFill()
+    private IEnumerator FadeHealthBarBackgroundFill(Color color, float currentAmount)
     {
-        _resourcebarBackgroundFill.CrossFadeAlpha(0, .75f, false);
+        var lerpTime = GetLerpTime(currentAmount, _resourcebarSlider.value);
+        
+        // Lerp the colored bar to the target amount of the resource
+        while (Mathf.Abs(_resourcebarSlider.value - currentAmount) > 0.1f)
+        {
+            _resourcebarSlider.value = Mathf.Lerp(_resourcebarSlider.value, currentAmount,  lerpTime * Time.deltaTime);
+            
+            _resourcebarImageFill.color = Color.Lerp(_resourcebarImageFill.color, color, lerpTime * Time.deltaTime);
+            
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(0.75f);
-
-        _resourcebarBackgroundSlider.value = _resourcebarSlider.value;
-        _resourcebarBackgroundFill.CrossFadeAlpha(1, 0.1f, false);
+        yield return new WaitForSeconds(0.15f);
+        
+        // Lerp the white bar to the fill of the colored bar
+        while (Mathf.Abs(_resourcebarBackgroundSlider.value - _resourcebarSlider.value) > 0.1f)
+        {
+            _resourcebarBackgroundSlider.value = Mathf.Lerp(_resourcebarBackgroundSlider.value, _resourcebarSlider.value,  lerpTime * Time.deltaTime);
+            
+            yield return null;
+        }
     }
     
-    private IEnumerator FadeHealthBarForegroundFill(Color color)
+    private IEnumerator FadeHealthBarForegroundFill(Color color, float currentAmount)
     {
-        _resourcebarBackgroundFill.color = Color.white;
+        var lerpTime = GetLerpTime(currentAmount, _resourcebarSlider.value);
 
-        _resourcebarBackgroundFill.CrossFadeColor(color, 0.75f, false, false);
+        // Lerp the white bar to the target amount of the resource
+        while (Math.Abs(_resourcebarBackgroundSlider.value - currentAmount) > 0.1f)
+        {
+            _resourcebarBackgroundSlider.value = Mathf.Lerp(_resourcebarBackgroundSlider.value, currentAmount,  lerpTime * Time.deltaTime);
+            
+            yield return null;
+        }
         
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.15f);
+        
+        // Lerp the fill of the colored bar to the white background bar
+        while (Mathf.Abs(_resourcebarSlider.value - _resourcebarBackgroundSlider.value) > 0.1f)
+        {
+            _resourcebarSlider.value = Mathf.Lerp(_resourcebarSlider.value, _resourcebarBackgroundSlider.value,  lerpTime * Time.deltaTime);
 
-        _resourcebarSlider.value = _resourcebarBackgroundSlider.value;
-        //_resourcebarBackgroundFill.CrossFadeAlpha(1, 0.1f, false);
+            _resourcebarImageFill.color = Color.Lerp(_resourcebarImageFill.color, color, lerpTime * Time.deltaTime);
+
+            yield return null;
+        }
+    }
+
+    private float GetLerpTime(float currentAmount, float oldAmount)
+    {
+        var finalLerpSpeed = Mathf.Clamp(Mathf.Abs((currentAmount - oldAmount) / oldAmount * 10f), _sliderLerpSpeed, 10f);
+
+        return finalLerpSpeed;
     }
 }

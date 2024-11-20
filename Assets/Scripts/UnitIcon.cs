@@ -29,15 +29,14 @@ public class UnitIcon : MonoBehaviour
 
     private void InitializeResourceBars()
     {
-        HealthBar.InitializeResourceBar(UnitData.MaxHealth);
-        HealthBar.UpdateResourceBar(UnitData.CurrentHealth, UnitData.MaxHealth, true);
+        HealthBar.InitializeResourceBar(UnitData.CurrentHealth, UnitData.MaxHealth);
     }
 
     private void UpdateResourceBar(ResourceBar resourceBar, UnitData unitData, bool isInit = false)
     {
         if (unitData != UnitData) return;
         
-        resourceBar.UpdateResourceBar(GetCurrentResourceAmount(resourceBar), GetMaxResourceAmount(resourceBar), isInit);
+        resourceBar.UpdateResourceBar(GetCurrentResourceAmount(resourceBar), GetMaxResourceAmount(resourceBar));
     }
 
     private float GetCurrentResourceAmount(ResourceBar resourceBar)
