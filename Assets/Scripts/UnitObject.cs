@@ -14,6 +14,7 @@ public class UnitObject : MonoBehaviour
     private static readonly int TakingDamage = Animator.StringToHash("TakingDamage");
 
     public static event Action<UnitObject> OnUnitObjectHovered;
+    public static event Action OnUnitObjectUnhovered;
 
     public static event Action<ResourceBar, UnitData, bool> OnResourceUpdated;
     
@@ -54,6 +55,11 @@ public class UnitObject : MonoBehaviour
     public void OnMouseEnter()
     {
         OnUnitObjectHovered?.Invoke(this);
+    }
+
+    public void OnMouseExit()
+    {
+        OnUnitObjectUnhovered?.Invoke();
     }
 
     public void OnMouseDown()

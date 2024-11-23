@@ -33,6 +33,8 @@ public class UnitData : ScriptableObject
     
     [field: SerializeField] public float BaseSpeed { get; internal set; }
     
+    [field: SerializeField] public float CurrentActionValue { get; set; }
+    
 
     private void OnValidate()
     {

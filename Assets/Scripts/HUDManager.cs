@@ -21,8 +21,6 @@ public class HUDManager : MonoBehaviour
     public void InitializeComponents()
     {
         SpawnUnitIcons();
-        SpawnActionIcons();
-        AdjustActionOrder();
     }
 
     private void SpawnUnitIcons()
@@ -53,21 +51,28 @@ public class HUDManager : MonoBehaviour
         }
     }
 
-    private void SpawnActionIcons()
+    public void AdjustActionOrderIcons(Dictionary<UnitData, float> actionOrder)
     {
-        foreach (var unit in CombatManagerSingleton.CombatManager().UnitObjectsInScene)
+        ClearUnitActionIcons();
+        
+        foreach (var unit in actionOrder)
         {
             var icon = Instantiate(_unitActionIconPrefab, _unitActionTimelineHolder.transform);
             icon.gameObject.SetActive(true);
             var iconComponent = icon.GetComponent<UnitActionIcon>();
-            iconComponent.InitializeData(unit.UnitData);
+            iconComponent.InitializeData(unit);
             
             UnitActionIcons.Add(iconComponent);
         }
     }
 
-    private void AdjustActionOrder()
+    private void ClearUnitActionIcons()
     {
+        foreach (var unitActionIcon in UnitActionIcons)
+        {
+            Destroy(unitActionIcon.gameObject);
+        }
         
+        UnitActionIcons.Clear();
     }
 }
