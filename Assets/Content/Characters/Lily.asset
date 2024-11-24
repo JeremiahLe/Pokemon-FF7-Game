@@ -20,5 +20,15 @@ MonoBehaviour:
   <Affinities>k__BackingField:
   - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
   <EquippableWeapons>k__BackingField: 00000000
-  <BaseHealth>k__BackingField: 37
-  <BaseSpeed>k__BackingField: 7
+  BaseMaxHealthStat:
+    BaseStat: 32
+  BaseSpeedStat:
+    BaseStat: 7
+  BasePhysicalAttackStat:
+    BaseStat: 5
+  BaseSpecialAttackStat:
+    BaseStat: 3
+  BasePhysicalDefenseStat:
+    BaseStat: 2
+  BaseSpecialDefenseStat:
+    BaseStat: 3

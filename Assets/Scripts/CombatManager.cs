@@ -39,6 +39,13 @@ public class CombatManager : MonoBehaviour
     public List<UnitObject> UnitObjectsInScene;
     public Dictionary<UnitData, float> CurrentActionOrder;
     public UnitData CurrentUnitAction;
+
+    private int _defaultActionGauge = 250;
+    private int _initialRoundActionValue = 150;
+    public int CurrentRound;
+    public int CurrentRoundActionValue;
+
+    public static event Action<UnitObject> OnUnitActionStart;
     
     private void Awake()
     {
@@ -50,6 +57,27 @@ public class CombatManager : MonoBehaviour
     private void Update()
     {
         CheckInputs();
+    }
+
+    private void OnDestroy()
+    {
+        LogUnitActions();
+    }
+
+    private void LogUnitActions()
+    {
+        var unitActions = new System.Text.StringBuilder();
+        unitActions.Append(CurrentRound).Append(" Rounds").AppendLine();
+        
+        foreach (var unit in UnitObjectsInScene)
+        {
+            unitActions.Append(unit.UnitData.UnitName).Append(" - ")
+                .Append(unit.UnitData.ActionsTaken)
+                .Append(" Actions")
+                .AppendLine();
+        }
+        
+        Debug.Log(unitActions);
     }
 
     private void CheckInputs()
@@ -99,43 +127,60 @@ public class CombatManager : MonoBehaviour
     private void InitializeCombat()
     {
         GetInitialRoundActionOrder();
+        InitializeRound();
         UpdateActionOrder();
+    }
+
+    private void InitializeRound()
+    {
+        CurrentRound++;
+        CurrentRoundActionValue = _initialRoundActionValue;
     }
 
     private IEnumerator AdvanceActionValues()
     {
         CurrentUnitAction = null;
+        
         while (!CurrentUnitAction)
         {
             foreach (var unit in CurrentActionOrder.ToList())
             {
-                var newActionValue = unit.Key.CurrentActionValue -= 1f;
-
-                CurrentActionOrder[unit.Key] = newActionValue;
+                unit.Key.CurrentActionValue -= 1f;
+                
+                CurrentActionOrder[unit.Key] = unit.Key.CurrentActionValue;
 
                 if (unit.Key.CurrentActionValue <= 0f && !CurrentUnitAction)
                 {
                     CurrentUnitAction = unit.Key;
                 }
             }
+            
+            CurrentRoundActionValue -= 1;
 
             yield return null;
         }
+
+        if (CurrentRoundActionValue <= 0)
+        {
+            InitializeRound();
+        }
         
         _HUDManager.AdjustActionOrderIcons(CurrentActionOrder);
+
+        InitiateUnitActionBegin();
     }
 
     private void GetInitialRoundActionOrder()
     {
-        var initialUnitActionOrder = UnitObjectsInScene.OrderBy(unit => Mathf.Round(100 / unit.UnitData.BaseSpeed)).ToList();
-
+        var initialUnitActionOrder = UnitObjectsInScene.OrderBy(unit => Mathf.Round(_defaultActionGauge / unit.UnitData.BaseSpeedStat.CurrentTotalStat)).ToList();
+        
         foreach (var unit in initialUnitActionOrder)
         {
-            unit.UnitData.CurrentActionValue = Mathf.Round(100 / unit.UnitData.BaseSpeed);
+            unit.UnitData.CurrentActionValue = Mathf.Round(_defaultActionGauge / unit.UnitData.BaseSpeedStat.CurrentTotalStat);
         }
-
+        
         var actionOrder = initialUnitActionOrder.ToDictionary(unit => unit.UnitData, unit => unit.UnitData.CurrentActionValue);
-
+        
         CurrentActionOrder = actionOrder;
         
         _HUDManager.AdjustActionOrderIcons(actionOrder);
@@ -150,11 +195,27 @@ public class CombatManager : MonoBehaviour
         StartCoroutine(AdvanceActionValues());
     }
 
+    private void InitiateUnitActionBegin()
+    {
+        if (!CurrentUnitAction) return;
+
+        var unitObject = UnitObjectsInScene.Find(unit => unit.UnitData == CurrentUnitAction);
+
+        if (!unitObject)
+        {
+            Debug.LogError("Can't find {0}", CurrentUnitAction);
+            return;
+        }
+        
+        OnUnitActionStart?.Invoke(unitObject);
+    }
+
     private void UnitEndAction()
     {
         if (CurrentUnitAction)
         {
-            CurrentUnitAction.CurrentActionValue = Mathf.Round(100 / CurrentUnitAction.BaseSpeed);
+            CurrentUnitAction.ActionsTaken++;
+            CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat);
         }
     }
 }

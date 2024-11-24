@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HUDManager : MonoBehaviour
 {
@@ -7,20 +8,28 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject _unitIconPrefab;
     [SerializeField] private GameObject _unitIconHolder;
     [SerializeField] private GameObject _enemyUnitIconHolder;
-    
-    [Header("Hovered Unit Indicator")]
-    [SerializeField] private UnitHoverIcon _UnitHoverIcon;
 
     [Header("UnitActionOrder")] 
     [SerializeField] private GameObject _unitActionIconPrefab;
+    [SerializeField] private GameObject _roundActionIconPrefab;
     [SerializeField] private GameObject _unitActionTimelineHolder;
+    
+    [Header("Other Components")]
+    [SerializeField] private UnitHoverIcon _unitHoverIcon;
+    [SerializeField] private RectTransform _commandWindow;
+    [SerializeField] private Vector2 _commandWindowOffset;
+    [SerializeField] private Canvas _canvas;
+
+    private Camera _camera;
 
     private List<UnitIcon> UnitIcons = new List<UnitIcon>();
     private List<UnitActionIcon> UnitActionIcons = new List<UnitActionIcon>();
     
     public void InitializeComponents()
     {
+        _camera = Camera.main;
         SpawnUnitIcons();
+        CombatManager.OnUnitActionStart += UpdateCommandWindowPosition;
     }
 
     private void SpawnUnitIcons()
@@ -54,16 +63,47 @@ public class HUDManager : MonoBehaviour
     public void AdjustActionOrderIcons(Dictionary<UnitData, float> actionOrder)
     {
         ClearUnitActionIcons();
+
+        var unitsActNextRound = new List<KeyValuePair<UnitData, float>>();
         
         foreach (var unit in actionOrder)
         {
-            var icon = Instantiate(_unitActionIconPrefab, _unitActionTimelineHolder.transform);
-            icon.gameObject.SetActive(true);
-            var iconComponent = icon.GetComponent<UnitActionIcon>();
-            iconComponent.InitializeData(unit);
-            
-            UnitActionIcons.Add(iconComponent);
+            if (unit.Key.CurrentActionValue < CombatManagerSingleton.CombatManager().CurrentRoundActionValue)
+            {
+                AddActionOrderIcon(unit);
+            }
+            else
+            {
+                unitsActNextRound.Add(unit);
+            }
         }
+
+        AddRoundActionIcon();
+
+        // These units act next round
+        foreach (var unit in unitsActNextRound)
+        {
+            AddActionOrderIcon(unit);
+        }
+    }
+
+    private void AddActionOrderIcon(KeyValuePair<UnitData, float> unit)
+    {
+        var icon = Instantiate(_unitActionIconPrefab, _unitActionTimelineHolder.transform);
+        icon.gameObject.SetActive(true);
+        var iconComponent = icon.GetComponent<UnitActionIcon>();
+        iconComponent.InitializeData(unit);
+            
+        UnitActionIcons.Add(iconComponent);
+    }
+    
+    private void AddRoundActionIcon()
+    {
+        var roundActionValueIcon = Instantiate(_roundActionIconPrefab, _unitActionTimelineHolder.transform);
+        roundActionValueIcon.gameObject.SetActive(true);
+        var roundActionValueIconComponent = roundActionValueIcon.GetComponent<UnitActionIcon>();
+        roundActionValueIconComponent.InitializeData(CombatManagerSingleton.CombatManager().CurrentRound, CombatManagerSingleton.CombatManager().CurrentRoundActionValue);
+        UnitActionIcons.Add(roundActionValueIconComponent);
     }
 
     private void ClearUnitActionIcons()
@@ -74,5 +114,15 @@ public class HUDManager : MonoBehaviour
         }
         
         UnitActionIcons.Clear();
+    }
+
+    private void UpdateCommandWindowPosition(UnitObject unitObject)
+    {
+        var canvasRect = _canvas.GetComponent<RectTransform>();
+
+        var viewportPosition = _camera.WorldToViewportPoint(unitObject.gameObject.transform.position);
+        var screenPosition = new Vector2(((viewportPosition.x*canvasRect.sizeDelta.x)-(canvasRect.sizeDelta.x*0.5f)), ((viewportPosition.y*canvasRect.sizeDelta.y)- (canvasRect.sizeDelta.y*0.5f)));
+
+        _commandWindow.anchoredPosition = screenPosition + _commandWindowOffset;
     }
 }

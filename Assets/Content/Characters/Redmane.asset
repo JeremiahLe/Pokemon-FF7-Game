@@ -21,5 +21,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a145f53243e33b2418c72ccc8aec9b4e, type: 2}
   - {fileID: 11400000, guid: 9e6d83626d34cb9439dc4bc6fa611e2f, type: 2}
   <EquippableWeapons>k__BackingField: 
-  <BaseHealth>k__BackingField: 55
-  <BaseSpeed>k__BackingField: 5
+  BaseMaxHealthStat:
+    BaseStat: 55
+  BaseSpeedStat:
+    BaseStat: 5
+  BasePhysicalAttackStat:
+    BaseStat: 9
+  BaseSpecialAttackStat:
+    BaseStat: 7
+  BasePhysicalDefenseStat:
+    BaseStat: 5
+  BaseSpecialDefenseStat:
+    BaseStat: 4

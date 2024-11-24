@@ -26,7 +26,7 @@ public class UnitObject : MonoBehaviour
     {
         ValidateEditorComponents();
     }
-    
+
     private void ValidateEditorComponents()
     {
         if (!SpriteRenderer) return;
@@ -48,8 +48,7 @@ public class UnitObject : MonoBehaviour
     public void InitializeUnitData()
     {
         UnitData = Instantiate(UnitData);
-        UnitData.MaxHealth = UnitData.BaseHealth;
-        UnitData.CurrentHealth = UnitData.MaxHealth;
+        UnitData.InitializeData();
     }
 
     public void OnMouseEnter()
@@ -75,7 +74,7 @@ public class UnitObject : MonoBehaviour
         
         BoundUnitIcon.AnimationTextDamageReceivedStart();
         AnimationTakingDamageStart();
-
+        
         return UnitData.CurrentHealth;
     }
 

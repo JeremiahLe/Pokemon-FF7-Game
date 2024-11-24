@@ -29,7 +29,7 @@ public class UnitIcon : MonoBehaviour
 
     private void InitializeResourceBars()
     {
-        HealthBar.InitializeResourceBar(UnitData.CurrentHealth, UnitData.MaxHealth);
+        HealthBar.InitializeResourceBar(UnitData.CurrentHealth, UnitData.BaseMaxHealthStat.CurrentTotalStat);
     }
 
     private void UpdateResourceBar(ResourceBar resourceBar, UnitData unitData, bool isInit = false)
@@ -70,7 +70,7 @@ public class UnitIcon : MonoBehaviour
         switch (resourceBar.CurrentResourceBarType)
         {
             case ResourceBar.ResourceBarType.Health:
-                return UnitData.MaxHealth;
+                return UnitData.BaseMaxHealthStat.CurrentTotalStat;
             
             case ResourceBar.ResourceBarType.Mana:
                 break;

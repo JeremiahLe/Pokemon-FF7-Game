@@ -13,4 +13,9 @@ public class UnitActionIcon : MonoBehaviour
         _unitSprite.sprite = unit.Key.UnitBaseSprite;
         _unitActionValue.text = unit.Value.ToString();
     }
+    
+    public void InitializeData(int currentRound, int roundActionValue)
+    {
+        _unitActionValue.text = ($"Round {currentRound}: {roundActionValue} AV");
+    }
 }
