@@ -22,6 +22,8 @@ public class UnitData : ScriptableObject
     [field: SerializeField] public List<AffinityClass> Affinities { get; private set; }
     
     [field: SerializeField] public List<WeaponType> EquippableWeapons { get; private set; }
+
+    [field: SerializeField] public BasicAttack BasicAttack;
     
     public float CurrentActionValue
     {
@@ -36,6 +38,13 @@ public class UnitData : ScriptableObject
         set => _actionsTaken = value;
     }
     private float _actionsTaken;
+
+    public bool UnitHasActedThisRound
+    {
+        get => _unitHasActedThisRound;
+        set => _unitHasActedThisRound = value;
+    }
+    private bool _unitHasActedThisRound;
 
     public float CurrentHealth
     {

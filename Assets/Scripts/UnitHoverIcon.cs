@@ -6,6 +6,8 @@ public class UnitHoverIcon : MonoBehaviour
    [SerializeField] private Image _unitHoverIconImage;
    public enum UnitHoverIconState { Hovering, Targeting }
 
+   public UnitHoverIconState UnitHoverState;
+
    private Animator UnitHoverIconAnimator;
    
    private static readonly int IsHovering = Animator.StringToHash("IsHovering");
@@ -13,16 +15,27 @@ public class UnitHoverIcon : MonoBehaviour
    private void Awake()
    {
       UnitHoverIconAnimator = GetComponent<Animator>();
-      
+
       UnitObject.OnUnitObjectHovered += HoverUnitObject;
-      UnitObject.OnUnitObjectUnhovered += HideIcon;
+      UnitObject.OnUnitObjectUnhovered += UnHoverUnitObject;
    }
 
-   private void HoverUnitObject(UnitObject unitObject)
+   private void OnDestroy()
+   {
+      UnitObject.OnUnitObjectHovered -= HoverUnitObject;
+      UnitObject.OnUnitObjectUnhovered -= UnHoverUnitObject;
+   }
+
+   public void HoverUnitObject(UnitObject unitObject)
    {
       ShowIcon();
       transform.position = unitObject.gameObject.transform.position + Vector3.up * (0.005f * unitObject.SpriteRenderer.sprite.pivot.y);
       UnitHoverIconAnimator.SetBool(IsHovering, true);
+   }
+
+   private void UnHoverUnitObject()
+   {
+      HideIcon();
    }
 
    private void ShowIcon()

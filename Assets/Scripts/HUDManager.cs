@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -24,12 +25,24 @@ public class HUDManager : MonoBehaviour
 
     private List<UnitIcon> UnitIcons = new List<UnitIcon>();
     private List<UnitActionIcon> UnitActionIcons = new List<UnitActionIcon>();
+    private List<UnitHoverIcon> UnitHoverIcons = new List<UnitHoverIcon>();
     
     public void InitializeComponents()
     {
         _camera = Camera.main;
+        
         SpawnUnitIcons();
+
         CombatManager.OnUnitActionStart += UpdateCommandWindowPosition;
+        CombatManager.OnUnitTargetingBegin += SpawnTargeters;
+        CombatManager.OnUnitTargetingEnd += ResetTargeters;
+    }
+
+    private void OnDestroy()
+    {
+        CombatManager.OnUnitActionStart -= UpdateCommandWindowPosition;
+        CombatManager.OnUnitTargetingBegin -= SpawnTargeters;
+        CombatManager.OnUnitTargetingEnd -= ResetTargeters;
     }
 
     private void SpawnUnitIcons()
@@ -124,5 +137,37 @@ public class HUDManager : MonoBehaviour
         var screenPosition = new Vector2(((viewportPosition.x*canvasRect.sizeDelta.x)-(canvasRect.sizeDelta.x*0.5f)), ((viewportPosition.y*canvasRect.sizeDelta.y)- (canvasRect.sizeDelta.y*0.5f)));
 
         _commandWindow.anchoredPosition = screenPosition + _commandWindowOffset;
+    }
+
+    private void SpawnTargeters(List<UnitObject> unitObjects)
+    {
+        _unitHoverIcon.gameObject.SetActive(false);
+        ClearTargeters();
+        
+        foreach (var target in unitObjects)
+        {
+            var hoverIcon = Instantiate(_unitHoverIcon);
+            hoverIcon.gameObject.SetActive(true);
+            hoverIcon.UnitHoverState = UnitHoverIcon.UnitHoverIconState.Targeting;
+            hoverIcon.HoverUnitObject(target);
+            
+            UnitHoverIcons.Add(hoverIcon);
+        }
+    }
+
+    private void ResetTargeters()
+    {
+        ClearTargeters();
+        _unitHoverIcon.gameObject.SetActive(true);
+    }
+
+    private void ClearTargeters()
+    {
+        foreach (var targeter in UnitHoverIcons)
+        {
+            Destroy(targeter.gameObject);
+        }
+        
+        UnitHoverIcons.Clear();
     }
 }

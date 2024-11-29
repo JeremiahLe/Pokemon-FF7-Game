@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitHoverIconImage: {fileID: 6816256769069372472}
+  UnitHoverState: 0
 --- !u!114 &5282277832025970737
 MonoBehaviour:
   m_ObjectHideFlags: 0

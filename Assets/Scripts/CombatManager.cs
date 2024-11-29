@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 public static class CombatManagerSingleton
 {
@@ -23,7 +25,21 @@ public static class CombatManagerSingleton
 public class CombatManager : MonoBehaviour
 {
     private HUDManager _HUDManager;
+    
+    public static event Action<UnitObject> OnUnitActionStart;
+    public static event Action<CommandType> OnCommandTypeStart;
+    public static event Action<List<UnitObject>> OnUnitTargetingBegin;
+    public static event Action OnUnitTargetingEnd;
+    public List<UnitObject> UnitObjectsInScene { get; private set; }
+    public Dictionary<UnitData, float> CurrentActionOrder { get; private set; }
+    public UnitData CurrentUnitAction { get; private set; }
+    public Command CurrentCommand { get; private set; }
 
+    [Tooltip("Determines a unit's place in the action order.")] private int _defaultActionGauge = 250;
+    [Tooltip("Determines the the action value allowed before a round passes.")] private int _initialRoundActionValue = 150;
+    public int CurrentRound { get; private set; }
+    public int CurrentRoundActionValue { get; private set; }
+    
     #region Debug
     public UnitObject DebugTargetUnitObject;
     
@@ -36,20 +52,10 @@ public class CombatManager : MonoBehaviour
     }
     #endregion
     
-    public List<UnitObject> UnitObjectsInScene;
-    public Dictionary<UnitData, float> CurrentActionOrder;
-    public UnitData CurrentUnitAction;
-
-    private int _defaultActionGauge = 250;
-    private int _initialRoundActionValue = 150;
-    public int CurrentRound;
-    public int CurrentRoundActionValue;
-
-    public static event Action<UnitObject> OnUnitActionStart;
-    
     private void Awake()
     {
         InitializeComponents();
+        InitializeEvents();
         GetAllUnitObjects();
         InitializeCombat();
     }
@@ -62,11 +68,22 @@ public class CombatManager : MonoBehaviour
     private void OnDestroy()
     {
         LogUnitActions();
+        UninitializeEvents();
+    }
+
+    private void InitializeEvents()
+    {
+        CommandWindow.OnCommandButtonClicked += AssignCommandType;
+    }
+
+    private void UninitializeEvents()
+    {
+        CommandWindow.OnCommandButtonClicked -= AssignCommandType;
     }
 
     private void LogUnitActions()
     {
-        var unitActions = new System.Text.StringBuilder();
+        var unitActions = new StringBuilder();
         unitActions.Append(CurrentRound).Append(" Rounds").AppendLine();
         
         foreach (var unit in UnitObjectsInScene)
@@ -212,10 +229,130 @@ public class CombatManager : MonoBehaviour
 
     private void UnitEndAction()
     {
-        if (CurrentUnitAction)
+        if (!CurrentUnitAction) return;
+        CurrentUnitAction.ActionsTaken++;
+        
+        CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat);
+    }
+
+    private void AssignCommandType(CommandType commandType)
+    {
+        if (commandType == CommandType.Back)
         {
-            CurrentUnitAction.ActionsTaken++;
-            CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat);
+            CurrentCommand = null;
+            OnUnitTargetingEnd?.Invoke();
+            return;
         }
+        
+        CurrentCommand = Command.ReturnCommandType(commandType);
+        OnCommandTypeStart?.Invoke(CurrentCommand.CommandType);
+        
+        switch (CurrentCommand.CommandType)
+        {
+            case CommandType.Attack:
+                BeginTargetingPhase(CurrentUnitAction.BasicAttack);
+                break;
+            
+            case CommandType.Action:
+                break;
+            
+            case CommandType.Defend:
+                break;
+            
+            case CommandType.Item:
+                break;
+            
+            case CommandType.Pass:
+                break;
+
+            case CommandType.Back:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public UnitObject GetUnitObject(UnitData unitData)
+    {
+        return UnitObjectsInScene.Find(x => x.UnitData == unitData);
+    }
+
+    private void BeginTargetingPhase(DamageSource damageSource = null)
+    {
+        var currentUnitObject = GetUnitObject(CurrentUnitAction);
+
+        if (!currentUnitObject) throw new NullReferenceException($"Cannot find UnitObject for {CurrentUnitAction}");
+
+        if (damageSource == null) return; // TODO: TEMP
+
+        var targetRestrictions = damageSource.GetTargetingData().TargetRestrictions;
+        var potentialTargets = GetTargetList(targetRestrictions, currentUnitObject);
+        var initialHoveredTargets = GetTargetCount(damageSource.GetTargetingData(), potentialTargets, currentUnitObject);
+
+        var targetLog = new StringBuilder().Append("Targets:").AppendLine();
+        foreach (var target in initialHoveredTargets)
+        {
+            targetLog.Append(target.UnitData.UnitName).AppendLine();
+        }
+        Debug.Log(targetLog);
+
+        OnUnitTargetingBegin?.Invoke(initialHoveredTargets.ToList());
+    }
+
+    private List<UnitObject> GetTargetList(TargetRestrictions targetRestrictions, UnitObject unitObject = null)
+    {
+        switch (targetRestrictions)
+        {
+            case TargetRestrictions.Any:
+                return UnitObjectsInScene;
+            
+            case TargetRestrictions.Self:
+                if (unitObject) return new List<UnitObject> { unitObject };
+                break;
+            
+            case TargetRestrictions.Allies:
+                return unitObject ? 
+                    UnitObjectsInScene.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
+                    : UnitObjectsInScene.Where(unit => unit.unitSideOfField == UnitOrientation.Left).ToList();
+            
+            case TargetRestrictions.Enemies:
+                return unitObject ? 
+                    UnitObjectsInScene.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
+                    : UnitObjectsInScene.Where(unit => unit.unitSideOfField == UnitOrientation.Right).ToList();
+            
+            default:
+                throw new ArgumentOutOfRangeException(nameof(targetRestrictions), targetRestrictions, null);
+        }
+
+        return null;
+    }
+
+    private IEnumerable<UnitObject> GetTargetCount(TargetingData targetingData, IEnumerable<UnitObject> potentialTargets, UnitObject unitObject = null)
+    {
+        switch (targetingData.TargetingType)
+        {
+            case TargetingType.Single:
+                return targetingData.TargetRestrictions == TargetRestrictions.Any 
+                    ? GetTargetList(TargetRestrictions.Enemies, unitObject).GetRange(0, 1)
+                    : new List<UnitObject> { potentialTargets.FirstOrDefault() };
+
+            case TargetingType.MultiSelect:
+                break;
+            
+            case TargetingType.Adjacent:
+                break;
+            
+            case TargetingType.All:
+                return potentialTargets;
+            
+            case TargetingType.Random:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException(nameof(targetingData), targetingData, null);
+        }
+
+        return null;
     }
 }
