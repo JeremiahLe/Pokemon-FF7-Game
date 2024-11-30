@@ -1,7 +1,9 @@
-using System;
 using System.Collections.Generic;
+using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+
 
 public class HUDManager : MonoBehaviour
 {
@@ -14,10 +16,13 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject _unitActionIconPrefab;
     [SerializeField] private GameObject _roundActionIconPrefab;
     [SerializeField] private GameObject _unitActionTimelineHolder;
+
+    [Header("Combat")] 
+    [SerializeField] private GameObject _combatPopupPrefab;
     
     [Header("Other Components")]
     [SerializeField] private UnitHoverIcon _unitHoverIcon;
-    [SerializeField] private RectTransform _commandWindow;
+    [SerializeField] private RectTransform _commandWindowTransform;
     [SerializeField] private Vector2 _commandWindowOffset;
     [SerializeField] private Canvas _canvas;
 
@@ -36,6 +41,7 @@ public class HUDManager : MonoBehaviour
         CombatManager.OnUnitActionStart += UpdateCommandWindowPosition;
         CombatManager.OnUnitTargetingBegin += SpawnTargeters;
         CombatManager.OnUnitTargetingEnd += ResetTargeters;
+        UnitObject.OnDamageTaken += SpawnCombatPopup;
     }
 
     private void OnDestroy()
@@ -43,6 +49,7 @@ public class HUDManager : MonoBehaviour
         CombatManager.OnUnitActionStart -= UpdateCommandWindowPosition;
         CombatManager.OnUnitTargetingBegin -= SpawnTargeters;
         CombatManager.OnUnitTargetingEnd -= ResetTargeters;
+        UnitObject.OnDamageTaken -= SpawnCombatPopup;
     }
 
     private void SpawnUnitIcons()
@@ -136,7 +143,7 @@ public class HUDManager : MonoBehaviour
         var viewportPosition = _camera.WorldToViewportPoint(unitObject.gameObject.transform.position);
         var screenPosition = new Vector2(((viewportPosition.x*canvasRect.sizeDelta.x)-(canvasRect.sizeDelta.x*0.5f)), ((viewportPosition.y*canvasRect.sizeDelta.y)- (canvasRect.sizeDelta.y*0.5f)));
 
-        _commandWindow.anchoredPosition = screenPosition + _commandWindowOffset;
+        _commandWindowTransform.anchoredPosition = screenPosition + _commandWindowOffset;
     }
 
     private void SpawnTargeters(List<UnitObject> unitObjects)
@@ -169,5 +176,10 @@ public class HUDManager : MonoBehaviour
         }
         
         UnitHoverIcons.Clear();
+    }
+
+    private void SpawnCombatPopup(UnitObject unitObject, float amount)
+    {
+        //
     }
 }

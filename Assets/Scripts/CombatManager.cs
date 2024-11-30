@@ -34,11 +34,13 @@ public class CombatManager : MonoBehaviour
     public Dictionary<UnitData, float> CurrentActionOrder { get; private set; }
     public UnitData CurrentUnitAction { get; private set; }
     public Command CurrentCommand { get; private set; }
+    public DamageSource CurrentDamageSource { get; private set; }
 
     [Tooltip("Determines a unit's place in the action order.")] private int _defaultActionGauge = 250;
     [Tooltip("Determines the the action value allowed before a round passes.")] private int _initialRoundActionValue = 150;
     public int CurrentRound { get; private set; }
     public int CurrentRoundActionValue { get; private set; }
+    public List<UnitObject> CurrentTargetedUnits { get; private set; } = new List<UnitObject>();
     
     #region Debug
     public UnitObject DebugTargetUnitObject;
@@ -74,11 +76,15 @@ public class CombatManager : MonoBehaviour
     private void InitializeEvents()
     {
         CommandWindow.OnCommandButtonClicked += AssignCommandType;
+        UnitObject.OnAttackAnimationEnd += HandleAttack;
+        UnitObject.OnConfirmTarget += HandleTargeting;
     }
 
     private void UninitializeEvents()
     {
         CommandWindow.OnCommandButtonClicked -= AssignCommandType;
+        UnitObject.OnAttackAnimationEnd -= HandleAttack;
+        UnitObject.OnConfirmTarget -= HandleTargeting;
     }
 
     private void LogUnitActions()
@@ -286,6 +292,8 @@ public class CombatManager : MonoBehaviour
 
         if (damageSource == null) return; // TODO: TEMP
 
+        CurrentDamageSource = damageSource;
+        
         var targetRestrictions = damageSource.GetTargetingData().TargetRestrictions;
         var potentialTargets = GetTargetList(targetRestrictions, currentUnitObject);
         var initialHoveredTargets = GetTargetCount(damageSource.GetTargetingData(), potentialTargets, currentUnitObject);
@@ -297,7 +305,7 @@ public class CombatManager : MonoBehaviour
         }
         Debug.Log(targetLog);
 
-        OnUnitTargetingBegin?.Invoke(initialHoveredTargets.ToList());
+        OnUnitTargetingBegin?.Invoke(potentialTargets.ToList());
     }
 
     private List<UnitObject> GetTargetList(TargetRestrictions targetRestrictions, UnitObject unitObject = null)
@@ -354,5 +362,41 @@ public class CombatManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void HandleTargeting(UnitObject unitObject)
+    {
+        CurrentTargetedUnits.Add(unitObject);
+        
+        OnUnitTargetingEnd?.Invoke();
+        
+        GetUnitObject(CurrentUnitAction).AnimationBasicAttackStart();
+    }
+
+    private void HandleAttack()
+    {
+        foreach (var target in CurrentTargetedUnits)
+        {
+            target.ReceiveDamage(CalculateDamage());
+        }
+
+        ResetAttack();
+        UnitEndAction();
+        UpdateActionOrder();
+    }
+
+    private float CalculateDamage()
+    {
+        if (!CurrentUnitAction) return -1f;
+        if (CurrentDamageSource == null) return -1f;
+
+        var finalDamage = CurrentUnitAction.BasePhysicalAttackStat.CurrentTotalStat * -1f;
+
+        return finalDamage;
+    }
+
+    private void ResetAttack()
+    {
+        CurrentTargetedUnits.Clear();
     }
 }

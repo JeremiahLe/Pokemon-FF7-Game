@@ -18,6 +18,12 @@ public class CommandWindow : MonoBehaviour
         InitializeButtonEvents();
     }
 
+    private void OnDestroy()
+    {
+        UnitObject.OnConfirmTarget -= TargetConfirmed;
+        CombatManager.OnUnitActionStart -= UnitActionStart;
+    }
+
     private void InitializeButtonComponents()
     {
         _commandTypes = new[]
@@ -26,6 +32,14 @@ public class CommandWindow : MonoBehaviour
                 CommandType.Defend, 
                 CommandType.Item, 
                 CommandType.Pass };
+        
+        UnitObject.OnConfirmTarget += TargetConfirmed;
+        CombatManager.OnUnitActionStart += UnitActionStart;
+    }
+
+    private void UnitActionStart(UnitObject unitObject)
+    {
+        ToggleAllCommands(true);
     }
 
     private void InitializeButtonEvents()
@@ -52,12 +66,21 @@ public class CommandWindow : MonoBehaviour
         ToggleAllCommands(false);
     }
 
-    private void ToggleAllCommands(bool setActive)
+    private void TargetConfirmed(UnitObject unitObject)
     {
+        ToggleAllCommands(false, true);
+    } 
+
+    public void ToggleAllCommands(bool setActive, bool hideAllOverride = false)
+    {
+        if (hideAllOverride) setActive = false;
+        
         foreach (var button in _commandButtons)
         {
             button.gameObject.SetActive(setActive);
         }
+
+        if (hideAllOverride) setActive = true;
         
         _backButton.gameObject.SetActive(!setActive);
     }

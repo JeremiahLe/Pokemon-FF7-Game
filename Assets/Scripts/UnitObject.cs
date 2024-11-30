@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,15 +13,21 @@ public class UnitObject : MonoBehaviour
     private Animator Animator;
     
     private static readonly int TakingDamage = Animator.StringToHash("TakingDamage");
+    private static readonly int BasicAttack = Animator.StringToHash("BasicAttack");
 
     public static event Action<UnitObject> OnUnitObjectHovered;
     public static event Action OnUnitObjectUnhovered;
+    public static event Action<UnitObject> OnConfirmTarget;
+    public static event Action OnAttackAnimationEnd;
+    public static event Action<UnitObject, float> OnDamageTaken;
 
     public static event Action<ResourceBar, UnitData, bool> OnResourceUpdated;
     
     [field: SerializeField, Title("ID")] 
     public UnitOrientation unitSideOfField;
     [field: SerializeField] public UnitData UnitData { get; private set; }
+
+    private bool _isInteractable;
     
     private void OnValidate()
     {
@@ -43,6 +50,24 @@ public class UnitObject : MonoBehaviour
     {
         CameraBillboard = GetComponent<CameraBillboard>();
         Animator = GetComponent<Animator>();
+        InitializeEvents();
+    }
+
+    private void OnDestroy()
+    {
+        DeInitializeEvents();
+    }
+
+    private void InitializeEvents()
+    {
+        CombatManager.OnUnitTargetingBegin += ValidateInteractability;
+        CombatManager.OnUnitTargetingEnd += ResetInteractability;
+    }
+    
+    private void DeInitializeEvents()
+    {
+        CombatManager.OnUnitTargetingBegin -= ValidateInteractability;
+        CombatManager.OnUnitTargetingEnd -= ResetInteractability;
     }
 
     public void InitializeUnitData()
@@ -64,6 +89,24 @@ public class UnitObject : MonoBehaviour
     public void OnMouseDown()
     {
         CombatManagerSingleton.CombatManager().DebugTargetUnitObject = this;
+
+        if (!_isInteractable) return;
+
+        _isInteractable = false;
+        OnConfirmTarget?.Invoke(this);
+    }
+
+    private void ValidateInteractability(List<UnitObject> unitObjects)
+    {
+        if (unitObjects.Contains(this))
+        {
+            _isInteractable = true;
+        }
+    }
+
+    private void ResetInteractability()
+    {
+        _isInteractable = false;
     }
 
     public float ReceiveDamage(float damagedReceived)
@@ -74,8 +117,21 @@ public class UnitObject : MonoBehaviour
         
         BoundUnitIcon.AnimationTextDamageReceivedStart();
         AnimationTakingDamageStart();
+
+        OnDamageTaken?.Invoke(this, damagedReceived);
         
         return UnitData.CurrentHealth;
+    }
+
+    public void AnimationBasicAttackStart()
+    {
+        Animator.SetBool(BasicAttack, true);
+    }
+    
+    private void AnimationBasicAttackEnd()
+    {
+        Animator.SetBool(BasicAttack, false);
+        OnAttackAnimationEnd?.Invoke();
     }
 
     private void AnimationTakingDamageStart()
