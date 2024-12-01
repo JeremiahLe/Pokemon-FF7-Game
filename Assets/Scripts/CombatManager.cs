@@ -390,7 +390,7 @@ public class CombatManager : MonoBehaviour
         if (!CurrentUnitAction) return -1f;
         if (CurrentDamageSource == null) return -1f;
 
-        var finalDamage = CurrentUnitAction.BasePhysicalAttackStat.CurrentTotalStat * -1f;
+        var finalDamage = CurrentUnitAction.GetScaledAmount(CurrentDamageSource) * -1f;
 
         return finalDamage;
     }

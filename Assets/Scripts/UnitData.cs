@@ -53,7 +53,7 @@ public class UnitData : ScriptableObject
     }
     private float _currentHealth;
 
-    public List<StatProperty> Stats { get; private set; }
+    public List<StatProperty> Stats { get; private set; } = new List<StatProperty>();
 
     [Header("Combat")]
     public StatProperty BaseMaxHealthStat;
@@ -78,12 +78,30 @@ public class UnitData : ScriptableObject
         foreach (var field in fieldObjs)
         {
             if (field == null) continue;
+            if (field.GetType() != typeof(StatProperty)) continue;
             
-            if (field.GetType() == typeof(StatProperty))
-                ((StatProperty)field).SetAllStats();
+            ((StatProperty)field).SetAllStats();
+            Stats.Add((StatProperty)field);
         }
 
         CurrentHealth = BaseMaxHealthStat.CurrentTotalStat; // TODO: Only if health should default to max
+    }
+
+    public float GetScaledAmount(DamageSource damageSource)
+    {
+        var finalAmount = 0f;
+        
+        foreach (var scalar in damageSource.DamageScalars)
+        {
+            var statToScaleFrom = Stats.Find(stat => stat.Stat == scalar.ScalingStat);
+            if (statToScaleFrom == null) throw new Exception($"Could not find stat with {scalar.ScalingStat}");
+            
+            var amount = statToScaleFrom.CurrentTotalStat * (scalar.ScalingMultiplier / 100);
+
+            finalAmount += amount;
+        }
+
+        return finalAmount;
     }
 }
 
@@ -91,6 +109,7 @@ public class UnitData : ScriptableObject
 public class StatProperty
 {
     [field: SerializeField] public float BaseStat;
+    [field: SerializeField] public Stat Stat;
     
     public float CurrentBaseStat
     {
@@ -111,4 +130,9 @@ public class StatProperty
         CurrentBaseStat = BaseStat;
         CurrentTotalStat = CurrentBaseStat;
     }
+}
+
+public enum Stat
+{
+    CurrentHealth, MaxHealth, PhysicalAttack, SpecialAttack, PhysicalDefense, SpecialDefense, Speed
 }
