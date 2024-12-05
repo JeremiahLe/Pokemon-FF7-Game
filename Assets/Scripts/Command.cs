@@ -3,6 +3,7 @@ using System;
 public abstract class Command
 {
     public CommandType CommandType;
+    public bool DoesShowCommandButtons;
 
     public abstract bool IsCommandAvailable();
 
@@ -14,7 +15,7 @@ public abstract class Command
             CommandType.Action => new ActionCommand(),
             CommandType.Defend => new DefendCommand(),
             CommandType.Item => new ItemCommand(),
-            CommandType.Pass => new ItemCommand(),
+            CommandType.Pass => new PassCommand(),
             _ => throw new ArgumentOutOfRangeException(nameof(commandType), commandType, null)
         };
     }
@@ -35,6 +36,7 @@ public class AttackCommand : Command
     public AttackCommand()
     {
         CommandType = CommandType.Attack;
+        DoesShowCommandButtons = true;
     }
 }
 
@@ -48,6 +50,7 @@ public class ActionCommand : Command
     public ActionCommand()
     {
         CommandType = CommandType.Action;
+        DoesShowCommandButtons = true;
     }
 }
 
@@ -61,6 +64,7 @@ public class DefendCommand : Command
     public DefendCommand()
     {
         CommandType = CommandType.Defend;
+        DoesShowCommandButtons = false;
     }
 }
 
@@ -74,6 +78,7 @@ public class ItemCommand : Command
     public ItemCommand()
     {
         CommandType = CommandType.Item;
+        DoesShowCommandButtons = true;
     }
 }
 
@@ -87,5 +92,20 @@ public class PassCommand : Command
     public PassCommand()
     {
         CommandType = CommandType.Pass;
+        DoesShowCommandButtons = false;
+    }
+}
+
+public class BackCommand : Command
+{
+    public override bool IsCommandAvailable()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public BackCommand()
+    {
+        CommandType = CommandType.Back;
+        DoesShowCommandButtons = true;
     }
 }

@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-
 public class HUDManager : MonoBehaviour
 {
     [Header("Unit Icons")]

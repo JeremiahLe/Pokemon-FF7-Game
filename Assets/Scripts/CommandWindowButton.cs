@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class CommandWindowButton : MonoBehaviour
 {
-    public CommandType CommandType;
+    public Command Command;
 }

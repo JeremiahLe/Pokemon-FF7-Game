@@ -8,9 +8,11 @@ public class CommandWindow : MonoBehaviour
     [SerializeField] private List<Button> _commandButtons;
     [SerializeField] private Button _backButton;
     
-    private CommandType[] _commandTypes;
+    private Command[] _commandTypes;
 
-    public static event Action<CommandType> OnCommandButtonClicked;
+    private Command _cachedBackCommand;
+
+    public static event Action<Command> OnCommandButtonClicked;
 
     private void Awake()
     {
@@ -26,12 +28,14 @@ public class CommandWindow : MonoBehaviour
 
     private void InitializeButtonComponents()
     {
-        _commandTypes = new[]
-            { CommandType.Attack, 
-                CommandType.Action, 
-                CommandType.Defend, 
-                CommandType.Item, 
-                CommandType.Pass };
+        _commandTypes = new Command[]
+            { new AttackCommand(), 
+                new ActionCommand(), 
+                new DefendCommand(), 
+                new ItemCommand(), 
+                new PassCommand() };
+
+        _cachedBackCommand = new BackCommand();
         
         UnitObject.OnConfirmTarget += TargetConfirmed;
         CombatManager.OnUnitActionStart += UnitActionStart;
@@ -48,21 +52,28 @@ public class CommandWindow : MonoBehaviour
         foreach (var button in _commandButtons)
         {
             var commandWindowButton = button.gameObject.AddComponent<CommandWindowButton>();
-            commandWindowButton.CommandType = _commandTypes[i];
-            button.onClick.AddListener(delegate { CommandButtonClicked(commandWindowButton.CommandType); });
+            commandWindowButton.Command = _commandTypes[i];
+            button.onClick.AddListener(delegate { CommandButtonClicked(commandWindowButton.Command); });
             i++;
         }
         
         _backButton.onClick.AddListener(delegate
         {
             ToggleAllCommands(true); 
-            OnCommandButtonClicked?.Invoke(CommandType.Back);
+            OnCommandButtonClicked?.Invoke(_cachedBackCommand);
         });
     }
 
-    private void CommandButtonClicked(CommandType commandType)
+    private void CommandButtonClicked(Command command)
     {
-        OnCommandButtonClicked?.Invoke(commandType);
+        OnCommandButtonClicked?.Invoke(command);
+
+        if (!command.DoesShowCommandButtons)
+        {
+            ToggleAllCommands(false, true);
+            return;
+        }
+
         ToggleAllCommands(false);
     }
 

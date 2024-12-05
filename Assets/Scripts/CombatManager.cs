@@ -241,16 +241,16 @@ public class CombatManager : MonoBehaviour
         CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat);
     }
 
-    private void AssignCommandType(CommandType commandType)
+    private void AssignCommandType(Command command)
     {
-        if (commandType == CommandType.Back)
+        if (command.CommandType == CommandType.Back)
         {
             CurrentCommand = null;
             OnUnitTargetingEnd?.Invoke();
             return;
         }
         
-        CurrentCommand = Command.ReturnCommandType(commandType);
+        CurrentCommand = Command.ReturnCommandType(command.CommandType);
         OnCommandTypeStart?.Invoke(CurrentCommand.CommandType);
         
         switch (CurrentCommand.CommandType)
@@ -263,12 +263,14 @@ public class CombatManager : MonoBehaviour
                 break;
             
             case CommandType.Defend:
+                PassAction();
                 break;
             
             case CommandType.Item:
                 break;
             
             case CommandType.Pass:
+                PassAction();
                 break;
 
             case CommandType.Back:
@@ -398,5 +400,11 @@ public class CombatManager : MonoBehaviour
     private void ResetAttack()
     {
         CurrentTargetedUnits.Clear();
+    }
+
+    private void PassAction()
+    {
+        UnitEndAction();
+        UpdateActionOrder();
     }
 }
