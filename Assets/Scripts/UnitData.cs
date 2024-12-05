@@ -87,7 +87,7 @@ public class UnitData : ScriptableObject
         CurrentHealth = BaseMaxHealthStat.CurrentTotalStat; // TODO: Only if health should default to max
     }
 
-    public float GetScaledAmount(DamageSource damageSource)
+    public float GetScaledDamageAmount(DamageSource damageSource)
     {
         var finalAmount = 0f;
         
@@ -102,6 +102,24 @@ public class UnitData : ScriptableObject
         }
 
         return finalAmount;
+    }
+
+    public float GetScaledDefensiveAmount(DamageSource damageSource)
+    {
+        if (!damageSource) return 0f;
+        
+        switch (damageSource.DamageType)
+        {
+            case DamageType.Physical:
+                return BasePhysicalDefenseStat.CurrentTotalStat;
+            
+            case DamageType.Special:
+                return BaseSpecialDefenseStat.CurrentTotalStat;
+            
+            case DamageType.True:
+            default:
+                return 0f;
+        }
     }
 }
 

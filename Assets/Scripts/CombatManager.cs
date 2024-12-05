@@ -379,7 +379,7 @@ public class CombatManager : MonoBehaviour
     {
         foreach (var target in CurrentTargetedUnits)
         {
-            target.ReceiveDamage(CalculateDamage());
+            target.ReceiveDamage(CalculateDamage(target));
         }
 
         ResetAttack();
@@ -387,14 +387,16 @@ public class CombatManager : MonoBehaviour
         UpdateActionOrder();
     }
 
-    private float CalculateDamage()
+    private float CalculateDamage(UnitObject target)
     {
-        if (!CurrentUnitAction) return -1f;
-        if (CurrentDamageSource == null) return -1f;
+        if (!CurrentUnitAction) return 0f;
+        if (CurrentDamageSource == null) return 0f;
 
-        var finalDamage = CurrentUnitAction.GetScaledAmount(CurrentDamageSource) * -1f;
+        var finalDamage = CurrentUnitAction.GetScaledDamageAmount(CurrentDamageSource) - target.UnitData.GetScaledDefensiveAmount(CurrentDamageSource);
 
-        return finalDamage;
+        if (finalDamage <= 0) return -1f; // TODO: Do not return 1 if immune
+        
+        return Mathf.Abs(finalDamage) * -1f;
     }
 
     private void ResetAttack()
