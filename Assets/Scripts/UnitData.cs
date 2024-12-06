@@ -24,6 +24,7 @@ public class UnitData : ScriptableObject
     [field: SerializeField] public List<WeaponType> EquippableWeapons { get; private set; }
 
     [field: SerializeField] public BasicAttack BasicAttack;
+    [field: SerializeField] public List<UnitSpecialAction> SpecialActions;
     
     public float CurrentActionValue
     {

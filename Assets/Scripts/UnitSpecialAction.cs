@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Unit Action", menuName = "Damage Sources")]
+[CreateAssetMenu(fileName = "New Unit Action", menuName = "Damage Sources/UnitSpecialActions")]
 public class UnitSpecialAction : DamageSource
 {
     [field: SerializeField, Title("Action Identifier")]
@@ -11,7 +11,6 @@ public class UnitSpecialAction : DamageSource
     
     [field: SerializeField, TextArea]
     public string ActionDescription { get; private set; }
-
-    public AffinityClass.AffinityType ActionAffinityType { get; private set; }
-    public AffinityClass ActionAffinityClass { get; private set; }
+    
+    [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set; }
 }

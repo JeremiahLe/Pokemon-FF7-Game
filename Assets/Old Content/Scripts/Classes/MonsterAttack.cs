@@ -7,7 +7,6 @@ using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Monster Attack", menuName = "Monster Attacks")]
 public class MonsterAttack : ScriptableObject
 {
     [Title("Monster Attack Identifier")]

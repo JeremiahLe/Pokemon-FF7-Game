@@ -7,10 +7,12 @@ public class CommandWindow : MonoBehaviour
 {
     [SerializeField] private List<Button> _commandButtons;
     [SerializeField] private Button _backButton;
-    
-    private Command[] _commandTypes;
+    [field: SerializeField] public Transform _commandsTransform { get; private set; }
+    [field: SerializeField] public GameObject _commandButtonPrefab { get; private set; }
 
+    private Command[] _commandTypes;
     private Command _cachedBackCommand;
+    public List<GameObject> _temporaryCommandButtons { get; private set; } = new List<GameObject>();
 
     public static event Action<Command> OnCommandButtonClicked;
 
@@ -24,6 +26,7 @@ public class CommandWindow : MonoBehaviour
     {
         UnitObject.OnConfirmTarget -= TargetConfirmed;
         CombatManager.OnUnitActionStart -= UnitActionStart;
+        CombatManager.OnCommandStart -= CommandTypeStart;
     }
 
     private void InitializeButtonComponents()
@@ -39,6 +42,12 @@ public class CommandWindow : MonoBehaviour
         
         UnitObject.OnConfirmTarget += TargetConfirmed;
         CombatManager.OnUnitActionStart += UnitActionStart;
+        CombatManager.OnCommandStart += CommandTypeStart;
+    }
+
+    private void CommandTypeStart(Command command)
+    {
+        command.OnCommandStart(this);
     }
 
     private void UnitActionStart(UnitObject unitObject)
@@ -59,7 +68,8 @@ public class CommandWindow : MonoBehaviour
         
         _backButton.onClick.AddListener(delegate
         {
-            ToggleAllCommands(true); 
+            ClearTemporaryCommands();
+            ToggleAllCommands(true);
             OnCommandButtonClicked?.Invoke(_cachedBackCommand);
         });
     }
@@ -94,5 +104,20 @@ public class CommandWindow : MonoBehaviour
         if (hideAllOverride) setActive = true;
         
         _backButton.gameObject.SetActive(!setActive);
+    }
+
+    private void ClearTemporaryCommands()
+    {
+        foreach (var command in _temporaryCommandButtons)
+        {
+            Destroy(command);
+        }
+        
+        _temporaryCommandButtons.Clear();
+    }
+
+    public void FixSiblingIndex()
+    {
+        _backButton.transform.SetAsLastSibling();
     }
 }

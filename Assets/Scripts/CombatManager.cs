@@ -27,7 +27,7 @@ public class CombatManager : MonoBehaviour
     private HUDManager _HUDManager;
     
     public static event Action<UnitObject> OnUnitActionStart;
-    public static event Action<CommandType> OnCommandTypeStart;
+    public static event Action<Command> OnCommandStart;
     public static event Action<List<UnitObject>> OnUnitTargetingBegin;
     public static event Action OnUnitTargetingEnd;
     public List<UnitObject> UnitObjectsInScene { get; private set; }
@@ -251,7 +251,7 @@ public class CombatManager : MonoBehaviour
         }
         
         CurrentCommand = Command.ReturnCommandType(command.CommandType);
-        OnCommandTypeStart?.Invoke(CurrentCommand.CommandType);
+        OnCommandStart?.Invoke(CurrentCommand);
         
         switch (CurrentCommand.CommandType)
         {

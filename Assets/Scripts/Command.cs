@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 public abstract class Command
 {
@@ -6,6 +8,7 @@ public abstract class Command
     public bool DoesShowCommandButtons;
 
     public abstract bool IsCommandAvailable();
+    public abstract void OnCommandStart(CommandWindow commandWindow);
 
     public static Command ReturnCommandType(CommandType commandType)
     {
@@ -33,6 +36,11 @@ public class AttackCommand : Command
         throw new System.NotImplementedException();
     }
 
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        //
+    }
+
     public AttackCommand()
     {
         CommandType = CommandType.Attack;
@@ -45,6 +53,26 @@ public class ActionCommand : Command
     public override bool IsCommandAvailable()
     {
         throw new System.NotImplementedException();
+    }
+
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        if (!CombatManagerSingleton.CombatManager()) return;
+
+        var combatManager = CombatManagerSingleton.CombatManager();
+
+        if (!combatManager.CurrentUnitAction) return;
+
+        foreach (var action in combatManager.CurrentUnitAction.SpecialActions)
+        {
+            var actionButton = Object.Instantiate(commandWindow._commandButtonPrefab, commandWindow._commandsTransform);
+            actionButton.SetActive(true);
+            var commandButtonComponent = actionButton.AddComponent<CommandWindowButton>();
+            commandButtonComponent.SetCachedUnitSpecialAction(action);
+            commandWindow._temporaryCommandButtons.Add(actionButton);
+        }
+
+        commandWindow.FixSiblingIndex();
     }
 
     public ActionCommand()
@@ -61,6 +89,11 @@ public class DefendCommand : Command
         throw new System.NotImplementedException();
     }
 
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        //
+    }
+
     public DefendCommand()
     {
         CommandType = CommandType.Defend;
@@ -75,6 +108,11 @@ public class ItemCommand : Command
         throw new System.NotImplementedException();
     }
 
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        //
+    }
+    
     public ItemCommand()
     {
         CommandType = CommandType.Item;
@@ -87,6 +125,11 @@ public class PassCommand : Command
     public override bool IsCommandAvailable()
     {
         throw new System.NotImplementedException();
+    }
+
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        //
     }
 
     public PassCommand()
@@ -103,6 +146,11 @@ public class BackCommand : Command
         throw new System.NotImplementedException();
     }
 
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        //
+    }
+    
     public BackCommand()
     {
         CommandType = CommandType.Back;

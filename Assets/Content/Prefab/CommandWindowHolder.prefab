@@ -88,6 +88,8 @@ MonoBehaviour:
   - {fileID: 5023741387057480598}
   - {fileID: 7541349968231492955}
   _backButton: {fileID: 6096218512436368533}
+  <_commandsTransform>k__BackingField: {fileID: 5690477949592804062}
+  <_commandButtonPrefab>k__BackingField: {fileID: 3966710319236796547}
 --- !u!1001 &156969588065479897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -540,6 +542,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d56e0ed6489e25f44abd7acc14f2fd6e, type: 3}
+--- !u!1 &3966710319236796547 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2597672474573384537, guid: d56e0ed6489e25f44abd7acc14f2fd6e, type: 3}
+  m_PrefabInstance: {fileID: 1369199146488953818}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6109481731856338594 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5172773513306895736, guid: d56e0ed6489e25f44abd7acc14f2fd6e, type: 3}
@@ -550,7 +557,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5159507991276547919, guid: d56e0ed6489e25f44abd7acc14f2fd6e, type: 3}
   m_PrefabInstance: {fileID: 1369199146488953818}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3966710319236796547}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
