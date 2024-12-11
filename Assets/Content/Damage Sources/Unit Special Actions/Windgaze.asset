@@ -10,18 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4c1fff0517c4194c8b38ea8037619f3, type: 3}
-  m_Name: Dark Slash
+  m_Name: Windgaze
   m_EditorClassIdentifier: 
-  <DamageType>k__BackingField: 0
-  <DamageScalars>k__BackingField:
-  - ScalingStat: 2
-    ScalingMultiplier: 125
-  - ScalingStat: 6
-    ScalingMultiplier: 50
-  <ActionName>k__BackingField: Dark Slash
-  <ActionDescription>k__BackingField: Deals damage to a single target.
-  <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: ee78d8dead00fd74ba789a4822c195a6, type: 2}
+  <DamageType>k__BackingField: 3
+  <DamageScalars>k__BackingField: []
+  <ActionName>k__BackingField: Windgaze
+  <ActionDescription>k__BackingField: Increase the user's Speed by 3.
+  <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
   TargetingData:
     TargetingType: 0
-    TargetRestrictions: 0
+    TargetRestrictions: 1
     TargetCount: 1

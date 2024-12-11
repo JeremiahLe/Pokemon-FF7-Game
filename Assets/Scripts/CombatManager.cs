@@ -6,7 +6,6 @@ using System.Text;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 public static class CombatManagerSingleton
 {
@@ -75,14 +74,14 @@ public class CombatManager : MonoBehaviour
 
     private void InitializeEvents()
     {
-        CommandWindow.OnCommandButtonClicked += AssignCommandType;
+        Command.CommandConfirmed += AssignCommandType;
         UnitObject.OnAttackAnimationEnd += HandleAttack;
         UnitObject.OnConfirmTarget += HandleTargeting;
     }
 
     private void UninitializeEvents()
     {
-        CommandWindow.OnCommandButtonClicked -= AssignCommandType;
+        Command.CommandConfirmed -= AssignCommandType;
         UnitObject.OnAttackAnimationEnd -= HandleAttack;
         UnitObject.OnConfirmTarget -= HandleTargeting;
     }
@@ -249,17 +248,20 @@ public class CombatManager : MonoBehaviour
             OnUnitTargetingEnd?.Invoke();
             return;
         }
-        
-        CurrentCommand = Command.ReturnCommandType(command.CommandType);
-        OnCommandStart?.Invoke(CurrentCommand);
-        
+
+        CurrentCommand = command;
+
         switch (CurrentCommand.CommandType)
         {
             case CommandType.Attack:
                 BeginTargetingPhase(CurrentUnitAction.BasicAttack);
                 break;
             
-            case CommandType.Action:
+            case CommandType.ActionStart:
+                break;
+            
+            case CommandType.ActionConfirm:
+                BeginTargetingPhase(command.UnitSpecialAction);
                 break;
             
             case CommandType.Defend:
@@ -272,7 +274,7 @@ public class CombatManager : MonoBehaviour
             case CommandType.Pass:
                 PassAction();
                 break;
-
+        
             case CommandType.Back:
                 break;
             
@@ -281,7 +283,7 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    public UnitObject GetUnitObject(UnitData unitData)
+    private UnitObject GetUnitObject(UnitData unitData)
     {
         return UnitObjectsInScene.Find(x => x.UnitData == unitData);
     }
@@ -291,9 +293,8 @@ public class CombatManager : MonoBehaviour
         var currentUnitObject = GetUnitObject(CurrentUnitAction);
 
         if (!currentUnitObject) throw new NullReferenceException($"Cannot find UnitObject for {CurrentUnitAction}");
-
-        if (damageSource == null) return; // TODO: TEMP
-
+        if (!damageSource) return;
+        
         CurrentDamageSource = damageSource;
         
         var targetRestrictions = damageSource.GetTargetingData().TargetRestrictions;
@@ -396,7 +397,7 @@ public class CombatManager : MonoBehaviour
 
         if (finalDamage <= 0) return -1f; // TODO: Do not return 1 if immune
         
-        return Mathf.Abs(finalDamage) * -1f;
+        return Mathf.Round(Mathf.Abs(finalDamage)) * -1f;
     }
 
     private void ResetAttack()

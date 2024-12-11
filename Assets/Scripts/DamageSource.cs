@@ -58,6 +58,6 @@ public enum TargetRestrictions
 
 public enum DamageType
 {
-    Physical, Special, True
+    Physical, Special, True, NonDamaging
 }
 

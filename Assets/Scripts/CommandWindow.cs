@@ -13,8 +13,7 @@ public class CommandWindow : MonoBehaviour
     private Command[] _commandTypes;
     private Command _cachedBackCommand;
     public List<GameObject> _temporaryCommandButtons { get; private set; } = new List<GameObject>();
-
-    public static event Action<Command> OnCommandButtonClicked;
+    
 
     private void Awake()
     {
@@ -33,7 +32,7 @@ public class CommandWindow : MonoBehaviour
     {
         _commandTypes = new Command[]
             { new AttackCommand(), 
-                new ActionCommand(), 
+                new ActionStartCommand(), 
                 new DefendCommand(), 
                 new ItemCommand(), 
                 new PassCommand() };
@@ -61,8 +60,12 @@ public class CommandWindow : MonoBehaviour
         foreach (var button in _commandButtons)
         {
             var commandWindowButton = button.gameObject.AddComponent<CommandWindowButton>();
-            commandWindowButton.Command = _commandTypes[i];
-            button.onClick.AddListener(delegate { CommandButtonClicked(commandWindowButton.Command); });
+            commandWindowButton.SetCommand(_commandTypes[i]);
+            button.onClick.AddListener(delegate
+            {
+                commandWindowButton.Command.OnCommandStart(this);
+                CommandButtonClicked(commandWindowButton.Command);
+            });
             i++;
         }
         
@@ -70,14 +73,14 @@ public class CommandWindow : MonoBehaviour
         {
             ClearTemporaryCommands();
             ToggleAllCommands(true);
-            OnCommandButtonClicked?.Invoke(_cachedBackCommand);
+            var commandWindowButton = _backButton.gameObject.AddComponent<CommandWindowButton>();
+            commandWindowButton.SetCommand(_cachedBackCommand);
+            commandWindowButton.Command.OnCommandStart(this);
         });
     }
 
-    private void CommandButtonClicked(Command command)
+    public void CommandButtonClicked(Command command)
     {
-        OnCommandButtonClicked?.Invoke(command);
-
         if (!command.DoesShowCommandButtons)
         {
             ToggleAllCommands(false, true);
@@ -106,7 +109,7 @@ public class CommandWindow : MonoBehaviour
         _backButton.gameObject.SetActive(!setActive);
     }
 
-    private void ClearTemporaryCommands()
+    public void ClearTemporaryCommands()
     {
         foreach (var command in _temporaryCommandButtons)
         {

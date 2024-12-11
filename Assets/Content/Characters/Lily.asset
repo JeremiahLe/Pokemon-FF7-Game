@@ -21,6 +21,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
   <EquippableWeapons>k__BackingField: 00000000
   BasicAttack: {fileID: 11400000, guid: 5b6ef6d282379644da5d5370b8fce9d1, type: 2}
+  SpecialActions:
+  - {fileID: 11400000, guid: 993433c92337d7143a47baef5126d00a, type: 2}
   BaseMaxHealthStat:
     BaseStat: 32
     Stat: 1

@@ -1,23 +1,36 @@
-using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommandWindowButton : MonoBehaviour
 {
-    public Command Command;
-    public UnitSpecialAction CachedUnitSpecialAction;
+    public Command Command { get; private set; }
 
-    [SerializeField] private TextMeshProUGUI _buttonText;
+    private TextMeshProUGUI _buttonText;
+    private Button _button;
 
     public void OnEnable()
     {
         _buttonText = GetComponentInChildren<TextMeshProUGUI>();
+        _button = GetComponent<Button>();
     }
 
-    public void SetCachedUnitSpecialAction(UnitSpecialAction unitSpecialAction)
+    public void SetCommand(Command command)
     {
-        CachedUnitSpecialAction = unitSpecialAction;
-        SetButtonText(CachedUnitSpecialAction.ActionName);
+        Command = command;
+
+        if (!Command.UnitSpecialAction) return;
+        SetButtonText(Command.UnitSpecialAction.ActionName);
+    }
+
+    public void AssignButtonEvent(CommandWindow commandWindow)
+    {
+        _button.onClick.AddListener(() =>
+        {
+            if (Command.CommandType == CommandType.ActionConfirm) commandWindow.ClearTemporaryCommands();
+            Command.OnCommandStart(commandWindow);
+            commandWindow.CommandButtonClicked(Command);
+        });
     }
     
     public void SetButtonText(string text)
@@ -25,3 +38,4 @@ public class CommandWindowButton : MonoBehaviour
         _buttonText.text = text;
     }
 }
+ 

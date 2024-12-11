@@ -13,4 +13,6 @@ public class UnitSpecialAction : DamageSource
     public string ActionDescription { get; private set; }
     
     [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set; }
+    
+    [field: SerializeField] public TargetingData TargetingData;
 }
