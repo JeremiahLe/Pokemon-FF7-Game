@@ -3,22 +3,6 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-// public static class ColorDatabaseSingleton
-// {
-//     private static ColorDatabase _colorDatabase;
-//     
-//     public static ColorDatabase ColorDatabase()
-//     {
-//         return _colorDatabase;
-//     }
-//     
-//     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-//     public static void InitializeSingletonDatabase()
-//     {
-//         _colorDatabase = AssetDatabase.LoadAssetAtPath<ColorDatabase>();
-//     }
-// }
-
 [Serializable]
 [CreateAssetMenu(fileName = "ColorDatabase", menuName = "Databases")]
 public class ColorDatabase : ScriptableSingleton<ColorDatabase>

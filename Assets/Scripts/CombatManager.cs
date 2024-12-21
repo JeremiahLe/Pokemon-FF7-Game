@@ -378,10 +378,18 @@ public class CombatManager : MonoBehaviour
 
     private void HandleAttack()
     {
-        foreach (var target in CurrentTargetedUnits)
+        // Check accuracy
+        // Apply pre attack
+        
+        if (CurrentDamageSource.DamageType != DamageType.NonDamaging)
         {
-            target.ReceiveDamage(CalculateDamage(target));
+            foreach (var target in CurrentTargetedUnits)
+            {
+                target.ReceiveDamage(CalculateDamage(target));
+            }
         }
+
+        // Apply post attack
 
         ResetAttack();
         UnitEndAction();

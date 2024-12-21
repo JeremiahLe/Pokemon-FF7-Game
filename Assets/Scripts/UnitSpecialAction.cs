@@ -15,4 +15,9 @@ public class UnitSpecialAction : DamageSource
     [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set; }
     
     [field: SerializeField] public TargetingData TargetingData;
+
+    public override TargetingData GetTargetingData()
+    {
+        return TargetingData;
+    }
 }

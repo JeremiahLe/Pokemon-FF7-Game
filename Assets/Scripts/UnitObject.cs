@@ -9,6 +9,8 @@ public class UnitObject : MonoBehaviour
     [field: SerializeField] public SpriteRenderer SpriteRenderer { get; private set; }
     public CameraBillboard CameraBillboard { get; private set; }
     public UnitIcon BoundUnitIcon { get; set; }
+    
+    public bool IsInteractable { get; private set; }
 
     private Animator Animator;
     
@@ -27,8 +29,6 @@ public class UnitObject : MonoBehaviour
     public UnitOrientation unitSideOfField;
     [field: SerializeField] public UnitData UnitData { get; private set; }
 
-    private bool _isInteractable;
-    
     private void OnValidate()
     {
         ValidateEditorComponents();
@@ -50,7 +50,6 @@ public class UnitObject : MonoBehaviour
     {
         CameraBillboard = GetComponent<CameraBillboard>();
         Animator = GetComponent<Animator>();
-        InitializeEvents();
     }
 
     private void OnDestroy()
@@ -74,6 +73,9 @@ public class UnitObject : MonoBehaviour
     {
         UnitData = Instantiate(UnitData);
         UnitData.InitializeData();
+        var allyOrEnemy = unitSideOfField == UnitOrientation.Left ? "Ally" : "Enemy";
+        gameObject.name = $"{UnitData.UnitName} - {allyOrEnemy}";
+        InitializeEvents();
     }
 
     public void OnMouseEnter()
@@ -90,9 +92,9 @@ public class UnitObject : MonoBehaviour
     {
         CombatManagerSingleton.CombatManager().DebugTargetUnitObject = this;
 
-        if (!_isInteractable) return;
+        if (!IsInteractable) return;
 
-        _isInteractable = false;
+        IsInteractable = false;
         OnConfirmTarget?.Invoke(this);
     }
 
@@ -100,13 +102,13 @@ public class UnitObject : MonoBehaviour
     {
         if (unitObjects.Contains(this))
         {
-            _isInteractable = true;
+            IsInteractable = true;
         }
     }
 
     private void ResetInteractability()
     {
-        _isInteractable = false;
+        IsInteractable = false;
     }
 
     public float ReceiveDamage(float damagedReceived)
