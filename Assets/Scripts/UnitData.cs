@@ -53,6 +53,8 @@ public class UnitData : ScriptableObject
         internal set => _currentHealth = Mathf.Clamp(value, 0, BaseMaxHealthStat.CurrentTotalStat);
     }
     private float _currentHealth;
+    
+    public AliveStatus AliveStatus { get; internal set; }
 
     public List<StatProperty> Stats { get; private set; } = new List<StatProperty>();
 
@@ -154,4 +156,9 @@ public class StatProperty
 public enum Stat
 {
     CurrentHealth, MaxHealth, PhysicalAttack, SpecialAttack, PhysicalDefense, SpecialDefense, Speed
+}
+
+public enum AliveStatus
+{
+    Alive, Dead
 }

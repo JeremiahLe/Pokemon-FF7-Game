@@ -210,7 +210,7 @@ public class CombatManager : MonoBehaviour
 
     private void UpdateActionOrder()
     {
-        var newActionOrder = UnitObjectsInScene.OrderBy(unit => unit.UnitData.CurrentActionValue).ToList();
+        var newActionOrder = UnitObjectsInScene.Where(unit => unit.UnitData.AliveStatus == AliveStatus.Alive).OrderBy(unit => unit.UnitData.CurrentActionValue).ToList();
 
         CurrentActionOrder = newActionOrder.ToDictionary(unit => unit.UnitData, unit => unit.UnitData.CurrentActionValue);
         
@@ -296,10 +296,10 @@ public class CombatManager : MonoBehaviour
         if (!damageSource) return;
         
         CurrentDamageSource = damageSource;
-        
-        var targetRestrictions = damageSource.GetTargetingData().TargetRestrictions;
-        var potentialTargets = GetTargetList(targetRestrictions, currentUnitObject);
-        var initialHoveredTargets = GetTargetCount(damageSource.GetTargetingData(), potentialTargets, currentUnitObject);
+
+        var targetingData = damageSource.GetTargetingData();
+        var potentialTargets = GetTargetList(targetingData, currentUnitObject);
+        var initialHoveredTargets = GetTargetCount(targetingData, potentialTargets, currentUnitObject);
 
         var targetLog = new StringBuilder().Append("Targets:").AppendLine();
         foreach (var target in initialHoveredTargets)
@@ -311,12 +311,16 @@ public class CombatManager : MonoBehaviour
         OnUnitTargetingBegin?.Invoke(potentialTargets.ToList());
     }
 
-    private List<UnitObject> GetTargetList(TargetRestrictions targetRestrictions, UnitObject unitObject = null)
+    private List<UnitObject> GetTargetList(TargetingData targetingData, UnitObject unitObject = null)
     {
-        switch (targetRestrictions)
+        var allUnits = targetingData.CanTargetDead
+            ? UnitObjectsInScene
+            : UnitObjectsInScene.Where(x => x.UnitData.AliveStatus == AliveStatus.Alive).ToList();
+        
+        switch (targetingData.TargetRestrictions)
         {
             case TargetRestrictions.Any:
-                return UnitObjectsInScene;
+                return allUnits;
             
             case TargetRestrictions.Self:
                 if (unitObject) return new List<UnitObject> { unitObject };
@@ -324,16 +328,16 @@ public class CombatManager : MonoBehaviour
             
             case TargetRestrictions.Allies:
                 return unitObject ? 
-                    UnitObjectsInScene.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
-                    : UnitObjectsInScene.Where(unit => unit.unitSideOfField == UnitOrientation.Left).ToList();
+                    allUnits.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
+                    : allUnits.Where(unit => unit.unitSideOfField == UnitOrientation.Left).ToList();
             
             case TargetRestrictions.Enemies:
                 return unitObject ? 
-                    UnitObjectsInScene.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
-                    : UnitObjectsInScene.Where(unit => unit.unitSideOfField == UnitOrientation.Right).ToList();
+                    allUnits.Where(unit => unit.unitSideOfField != unitObject.unitSideOfField).ToList() 
+                    : allUnits.Where(unit => unit.unitSideOfField == UnitOrientation.Right).ToList();
             
             default:
-                throw new ArgumentOutOfRangeException(nameof(targetRestrictions), targetRestrictions, null);
+                return allUnits;
         }
 
         return null;
@@ -345,7 +349,7 @@ public class CombatManager : MonoBehaviour
         {
             case TargetingType.Single:
                 return targetingData.TargetRestrictions == TargetRestrictions.Any 
-                    ? GetTargetList(TargetRestrictions.Enemies, unitObject).GetRange(0, 1)
+                    ? GetTargetList(new TargetingData(TargetingType.Single, TargetRestrictions.Enemies, 1, false), unitObject).GetRange(0, 1)
                     : new List<UnitObject> { potentialTargets.FirstOrDefault() };
 
             case TargetingType.MultiSelect:
@@ -380,17 +384,23 @@ public class CombatManager : MonoBehaviour
     {
         // Check accuracy
         // Apply pre attack
-        
+
+        var deadTargets = new List<UnitObject>();
         if (CurrentDamageSource.DamageType != DamageType.NonDamaging)
         {
             foreach (var target in CurrentTargetedUnits)
             {
                 target.ReceiveDamage(CalculateDamage(target));
+                if (target.UnitData.CurrentHealth <= 0) deadTargets.Add(target);
             }
         }
 
         // Apply post attack
-
+        foreach (var dead in deadTargets)
+        {
+            HandleDeath(dead);
+        }
+        
         ResetAttack();
         UnitEndAction();
         UpdateActionOrder();
@@ -417,5 +427,11 @@ public class CombatManager : MonoBehaviour
     {
         UnitEndAction();
         UpdateActionOrder();
+    }
+
+    private void HandleDeath(UnitObject deadUnit)
+    {
+        deadUnit.UnitData.AliveStatus = AliveStatus.Dead;
+        Debug.Log($"{deadUnit.UnitData.UnitName} has died!");
     }
 }

@@ -40,12 +40,14 @@ public struct TargetingData
     public TargetingType TargetingType;
     public TargetRestrictions TargetRestrictions;
     public int TargetCount;
+    public bool CanTargetDead;
 
-    public TargetingData(TargetingType targetingType, TargetRestrictions targetRestrictions, int targetCount)
+    public TargetingData(TargetingType targetingType, TargetRestrictions targetRestrictions, int targetCount, bool canTargetDead)
     {
         TargetingType = targetingType;
         TargetRestrictions = targetRestrictions;
         TargetCount = targetCount;
+        CanTargetDead = canTargetDead;
 
         if (TargetCount == 0) TargetCount = 1;
     }

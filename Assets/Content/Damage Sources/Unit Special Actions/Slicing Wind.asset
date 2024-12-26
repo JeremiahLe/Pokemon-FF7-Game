@@ -15,7 +15,7 @@ MonoBehaviour:
   <DamageType>k__BackingField: 1
   <DamageScalars>k__BackingField:
   - ScalingStat: 2
-    ScalingMultiplier: 100
+    ScalingMultiplier: 50
   - ScalingStat: 6
     ScalingMultiplier: 200
   <ActionName>k__BackingField: Slicing Wind
