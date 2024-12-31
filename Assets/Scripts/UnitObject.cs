@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -72,7 +73,12 @@ public class UnitObject : MonoBehaviour
     public void InitializeUnitData()
     {
         UnitData = Instantiate(UnitData);
+
+        UnitData.BasicAttack = Instantiate(UnitData.BasicAttack);
+        var specialActions = UnitData.SpecialActions.Select(Instantiate).ToList();
+        UnitData.SpecialActions = specialActions;
         UnitData.InitializeData();
+        
         var allyOrEnemy = unitSideOfField == UnitOrientation.Left ? "Ally" : "Enemy";
         gameObject.name = $"{UnitData.UnitName} - {allyOrEnemy}";
         InitializeEvents();

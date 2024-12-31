@@ -1,42 +1,71 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CommandInfo : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _actionName;
     [SerializeField] private TextMeshProUGUI _actionDescription;
-
-    [SerializeField] private UnitSpecialAction _unitSpecialAction;
+    [SerializeField] private GameObject _window;
+    
+    private Action OnTargetEnd = delegate { };
+    private IDealsDamage _damageSource;
 
     private void Awake()
     {
-        SetText();
+        _window.SetActive(false);
+        OnTargetEnd = () =>
+        {
+            ToggleVisibility(false);
+            _damageSource = null;
+        };
+        
+        CombatManager.OnUnitTargetingBegin += ToggleVisibilityInterim;
+        CombatManager.OnUnitTargetingEnd += OnTargetEnd;
+        CombatManager.OnDamageSourceSet += (b) => { _damageSource = b;};
     }
 
-    public void SetDamageSource()
+    private void OnDestroy()
     {
-        SetText();
+        CombatManager.OnUnitTargetingBegin -= ToggleVisibilityInterim;
+        CombatManager.OnUnitTargetingEnd -= OnTargetEnd;
     }
 
+    private void ToggleVisibilityInterim(List<UnitObject> unitObjects)
+    {
+        ToggleVisibility(true);
+    }
+
+    private void ToggleVisibility(bool isVisible)
+    {
+        _window.SetActive(isVisible);
+
+        if (!isVisible) return;
+        if (_damageSource == null) return;
+        
+        SetText();
+    }
+    
     private void SetText()
     {
-        _actionDescription.text = _unitSpecialAction.ActionDescription;
+        _actionDescription.text = _damageSource.ActionDescription;
         var newText = _actionDescription.text;
 
-        var amount = new Regex(Regex.Escape("{0}"));
-        var stat = new Regex(Regex.Escape("{1}"));
-        var target = new Regex(Regex.Escape("{2}"));
+        var amount = new Regex(Regex.Escape("{amount}"));
+        var stat = new Regex(Regex.Escape("{stat}"));
+        var target = new Regex(Regex.Escape("{target}"));
 
-        foreach (var scalar in _unitSpecialAction.DamageScalars)
+        foreach (var scalar in _damageSource.DamageScalars)
         {
             newText = amount.Replace(newText, new StringBuilder().Append(scalar.ScalingMultiplier).Append("%").ToString(), 1);
             newText = stat.Replace(newText, GetStatText(scalar.ScalingStat), 1);
         }
 
-        newText = target.Replace(newText, GetTargetText(_unitSpecialAction.TargetingData));
+        newText = target.Replace(newText, GetTargetText(_damageSource.TargetingData));
 
         _actionDescription.text = newText;
     }

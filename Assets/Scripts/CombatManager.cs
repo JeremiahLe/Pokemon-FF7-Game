@@ -29,11 +29,12 @@ public class CombatManager : MonoBehaviour
     public static event Action<Command> OnCommandStart;
     public static event Action<List<UnitObject>> OnUnitTargetingBegin;
     public static event Action OnUnitTargetingEnd;
+    public static event Action<IDealsDamage> OnDamageSourceSet;
     public List<UnitObject> UnitObjectsInScene { get; private set; }
     public Dictionary<UnitData, float> CurrentActionOrder { get; private set; }
     public UnitData CurrentUnitAction { get; private set; }
     public Command CurrentCommand { get; private set; }
-    public DamageSource CurrentDamageSource { get; private set; }
+    public IDealsDamage CurrentDamageSource { get; private set; }
 
     [Tooltip("Determines a unit's place in the action order.")] private int _defaultActionGauge = 250;
     [Tooltip("Determines the the action value allowed before a round passes.")] private int _initialRoundActionValue = 150;
@@ -253,15 +254,13 @@ public class CombatManager : MonoBehaviour
 
         switch (CurrentCommand.CommandType)
         {
-            case CommandType.Attack:
-                BeginTargetingPhase(CurrentUnitAction.BasicAttack);
-                break;
-            
             case CommandType.ActionStart:
                 break;
             
+            case CommandType.Attack:
             case CommandType.ActionConfirm:
-                BeginTargetingPhase(command.UnitSpecialAction);
+                OnDamageSourceSet?.Invoke(command.DamageSource);
+                BeginTargetingPhase(command.DamageSource);
                 break;
             
             case CommandType.Defend:
@@ -288,16 +287,16 @@ public class CombatManager : MonoBehaviour
         return UnitObjectsInScene.Find(x => x.UnitData == unitData);
     }
 
-    private void BeginTargetingPhase(DamageSource damageSource = null)
+    private void BeginTargetingPhase(IDealsDamage damageSource)
     {
         var currentUnitObject = GetUnitObject(CurrentUnitAction);
 
         if (!currentUnitObject) throw new NullReferenceException($"Cannot find UnitObject for {CurrentUnitAction}");
-        if (!damageSource) return;
+        if (damageSource == null) return;
         
         CurrentDamageSource = damageSource;
 
-        var targetingData = damageSource.GetTargetingData();
+        var targetingData = damageSource.TargetingData;
         var potentialTargets = GetTargetList(targetingData, currentUnitObject);
         var initialHoveredTargets = GetTargetCount(targetingData, potentialTargets, currentUnitObject);
 

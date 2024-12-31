@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -90,7 +89,7 @@ public class UnitData : ScriptableObject
         CurrentHealth = BaseMaxHealthStat.CurrentTotalStat; // TODO: Only if health should default to max
     }
 
-    public float GetScaledDamageAmount(DamageSource damageSource)
+    public float GetScaledDamageAmount(IDealsDamage damageSource)
     {
         var finalAmount = 0f;
         
@@ -107,9 +106,9 @@ public class UnitData : ScriptableObject
         return finalAmount;
     }
 
-    public float GetScaledDefensiveAmount(DamageSource damageSource)
+    public float GetScaledDefensiveAmount(IDealsDamage damageSource)
     {
-        if (!damageSource) return 0f;
+        if (damageSource == null) return 0f;
         
         switch (damageSource.DamageType)
         {

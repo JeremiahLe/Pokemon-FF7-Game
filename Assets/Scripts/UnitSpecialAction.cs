@@ -1,23 +1,15 @@
 using System;
-using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 [CreateAssetMenu(fileName = "New Unit Action", menuName = "Damage Sources/UnitSpecialActions")]
-public class UnitSpecialAction : DamageSource
+public class UnitSpecialAction : ScriptableObject, ISpecialAction
 {
-    [field: SerializeField, Title("Action Identifier")]
-    public string ActionName { get; private set; }
-    
-    [field: SerializeField, TextArea]
-    public string ActionDescription { get; private set; }
-    
-    [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set; }
-    
-    [field: SerializeField] public TargetingData TargetingData;
-
-    public override TargetingData GetTargetingData()
-    {
-        return TargetingData;
-    }
+    [field: SerializeField] public string ActionName { get; private set; }
+    [field: SerializeField, TextArea] public string ActionDescription { get; private set;}
+    [field: SerializeField] public DamageType DamageType { get; private set;}
+    [field: SerializeField] public List<DamageScalar> DamageScalars { get; private set;}
+    [field: SerializeField] public TargetingData TargetingData { get; private set;}
+    [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set;}
 }

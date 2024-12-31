@@ -5,7 +5,7 @@ public abstract class Command
 {
     public CommandType CommandType;
     public bool DoesShowCommandButtons;
-    public UnitSpecialAction UnitSpecialAction;
+    public IDealsDamage DamageSource;
     public abstract bool IsCommandAvailable();
 
     public virtual void OnCommandStart(CommandWindow commandWindow)
@@ -46,12 +46,25 @@ public class AttackCommand : Command
     {
         throw new System.NotImplementedException();
     }
-    
+
+    public override void OnCommandStart(CommandWindow commandWindow)
+    {
+        if (!CombatManagerSingleton.CombatManager()) return;
+
+        var combatManager = CombatManagerSingleton.CombatManager();
+
+        if (!combatManager.CurrentUnitAction) return;
+
+        DamageSource = combatManager.CurrentUnitAction.BasicAttack;
+            
+        base.OnCommandStart(commandWindow);
+    }
+
     public AttackCommand()
     {
         CommandType = CommandType.Attack;
         DoesShowCommandButtons = true;
-        UnitSpecialAction = null;
+        DamageSource = null;
     }
 }
 
@@ -90,14 +103,14 @@ public class ActionStartCommand : Command
     {
         CommandType = CommandType.ActionStart;
         DoesShowCommandButtons = true;
-        UnitSpecialAction = null;
+        DamageSource = null;
     }
     
     public ActionStartCommand(CommandType commandType, bool doesShowCommandButtons, UnitSpecialAction unitSpecialAction)
     {
         CommandType = commandType;
         DoesShowCommandButtons = doesShowCommandButtons;
-        UnitSpecialAction = unitSpecialAction;
+        DamageSource = unitSpecialAction;
     }
 }
 
@@ -112,14 +125,14 @@ public class ActionConfirmCommand : Command
     {
         CommandType = CommandType.ActionConfirm;
         DoesShowCommandButtons = true;
-        UnitSpecialAction = null;
+        DamageSource = null;
     }
 
     public ActionConfirmCommand(CommandType commandType, bool doesShowCommandButtons, UnitSpecialAction unitSpecialAction)
     {
         CommandType = commandType;
         DoesShowCommandButtons = doesShowCommandButtons;
-        UnitSpecialAction = unitSpecialAction;
+        DamageSource = unitSpecialAction;
     }
 }
 

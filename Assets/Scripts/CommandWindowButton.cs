@@ -19,8 +19,8 @@ public class CommandWindowButton : MonoBehaviour
     {
         Command = command;
 
-        if (!Command.UnitSpecialAction) return;
-        SetButtonText(Command.UnitSpecialAction.ActionName);
+        if (Command.DamageSource == null) return;
+        SetButtonText(Command.DamageSource.ActionName);
     }
 
     public void AssignButtonEvent(CommandWindow commandWindow)
