@@ -62,7 +62,6 @@ MonoBehaviour:
   _actionName: {fileID: 0}
   _actionDescription: {fileID: 7290367051224874170}
   _window: {fileID: 8806122865068728209}
-  _unitSpecialAction: {fileID: 11400000, guid: 7c6b5ebf40fad64499eede57cd114ee4, type: 2}
 --- !u!114 &1257380897140455082
 MonoBehaviour:
   m_ObjectHideFlags: 0

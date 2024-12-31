@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 847b91449f274a56b1475e3dc2909fa8, type: 3}
-  m_Name: Single Physical 100
+  m_Name: Test
   m_EditorClassIdentifier: 
-  <ActionName>k__BackingField: Basic Attack
-  <ActionDescription>k__BackingField: Deals {affinity} Physical damage equal to 100%
-    Physical Attack to a single target.
+  <ActionName>k__BackingField: 
+  <ActionDescription>k__BackingField: Deals Wind Physical damage equal to to a single
+    target.
   <DamageType>k__BackingField: 0
-  <DamageScalars>k__BackingField:
-  - ScalingStat: 2
-    ScalingMultiplier: 100
+  <DamageScalars>k__BackingField: []
   <TargetingData>k__BackingField:
     TargetingType: 0
     TargetRestrictions: 0

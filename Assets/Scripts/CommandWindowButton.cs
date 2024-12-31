@@ -27,7 +27,6 @@ public class CommandWindowButton : MonoBehaviour
     {
         _button.onClick.AddListener(() =>
         {
-            if (Command.CommandType == CommandType.ActionConfirm) commandWindow.ClearTemporaryCommands();
             Command.OnCommandStart(commandWindow);
             commandWindow.CommandButtonClicked(Command);
         });

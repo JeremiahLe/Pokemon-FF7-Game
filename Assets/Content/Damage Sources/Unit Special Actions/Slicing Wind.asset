@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Slicing Wind
   m_EditorClassIdentifier: 
   <ActionName>k__BackingField: Slicing Wind
-  <ActionDescription>k__BackingField: Deals {affinity} {type} damage equal to {amount}
-    {stat} and {amount} {stat} to {target}
+  <ActionDescription>k__BackingField: Deals Wind Special damage equal to 50% Physical
+    Attack and 200% Speed to a single target.
   <DamageType>k__BackingField: 1
   <DamageScalars>k__BackingField:
   - ScalingStat: 2

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Dark Slash
   m_EditorClassIdentifier: 
   <ActionName>k__BackingField: Dark Slash
-  <ActionDescription>k__BackingField: Deals {affinity} {type} damage equal to {amount}
-    {stat} and {amount} {stat} to {target}
+  <ActionDescription>k__BackingField: Deals Shadow Physical damage equal to 125%
+    Physical Attack and 50% Speed to a single target.
   <DamageType>k__BackingField: 0
   <DamageScalars>k__BackingField:
   - ScalingStat: 2

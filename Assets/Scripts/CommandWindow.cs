@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,9 +11,8 @@ public class CommandWindow : MonoBehaviour
 
     private Command[] _commandTypes;
     private Command _cachedBackCommand;
-    public List<GameObject> _temporaryCommandButtons { get; private set; } = new List<GameObject>();
+    public List<GameObject> TemporaryCommandButtons { get; } = new List<GameObject>();
     
-
     private void Awake()
     {
         InitializeButtonComponents();
@@ -51,6 +49,7 @@ public class CommandWindow : MonoBehaviour
 
     private void UnitActionStart(UnitObject unitObject)
     {
+        ClearTemporaryCommands();
         ToggleAllCommands(true);
     }
 
@@ -71,7 +70,7 @@ public class CommandWindow : MonoBehaviour
         
         _backButton.onClick.AddListener(delegate
         {
-            ClearTemporaryCommands();
+            ToggleTemporaryCommands(false);
             ToggleAllCommands(true);
             var commandWindowButton = _backButton.gameObject.AddComponent<CommandWindowButton>();
             commandWindowButton.SetCommand(_cachedBackCommand);
@@ -93,7 +92,8 @@ public class CommandWindow : MonoBehaviour
     private void TargetConfirmed(UnitObject unitObject)
     {
         ToggleAllCommands(false, true);
-    } 
+        ClearTemporaryCommands();
+    }
 
     public void ToggleAllCommands(bool setActive, bool hideAllOverride = false)
     {
@@ -111,12 +111,20 @@ public class CommandWindow : MonoBehaviour
 
     public void ClearTemporaryCommands()
     {
-        foreach (var command in _temporaryCommandButtons)
+        foreach (var command in TemporaryCommandButtons)
         {
             Destroy(command);
         }
         
-        _temporaryCommandButtons.Clear();
+        TemporaryCommandButtons.Clear();
+    }
+
+    public void ToggleTemporaryCommands(bool setActive)
+    {
+        foreach (var command in TemporaryCommandButtons)
+        {
+            command.SetActive(setActive);
+        }
     }
 
     public void FixSiblingIndex()

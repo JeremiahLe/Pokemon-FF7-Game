@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -12,4 +14,11 @@ public class UnitSpecialAction : ScriptableObject, ISpecialAction
     [field: SerializeField] public List<DamageScalar> DamageScalars { get; private set;}
     [field: SerializeField] public TargetingData TargetingData { get; private set;}
     [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set;}
+    
+    [Title("Helpers"), Button("Autofill description")]
+    public void Button()
+    {
+        ActionDescription = DealsDamageStaticHelpers.GetAutofilledDescription(this);
+        EditorUtility.SetDirty(this);
+    }
 }

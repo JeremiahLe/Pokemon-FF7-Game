@@ -83,19 +83,26 @@ public class ActionStartCommand : Command
 
         if (!combatManager.CurrentUnitAction) return;
 
+        if (commandWindow.TemporaryCommandButtons.Count != 0)
+        {
+            commandWindow.ToggleTemporaryCommands(true);
+            base.OnCommandStart(commandWindow);
+            return;
+        }
+
         foreach (var action in combatManager.CurrentUnitAction.SpecialActions)
         {
             var actionButton = Object.Instantiate(commandWindow._commandButtonPrefab, commandWindow._commandsTransform);
             actionButton.SetActive(true);
             var commandButtonComponent = actionButton.AddComponent<CommandWindowButton>();
-            
+
             commandButtonComponent.SetCommand(new ActionConfirmCommand(CommandType.ActionConfirm, DoesShowCommandButtons, action));
             commandButtonComponent.AssignButtonEvent(commandWindow);
-            commandWindow._temporaryCommandButtons.Add(actionButton);
+            commandWindow.TemporaryCommandButtons.Add(actionButton);
         }
 
         commandWindow.FixSiblingIndex();
-        
+
         base.OnCommandStart(commandWindow);
     }
 
