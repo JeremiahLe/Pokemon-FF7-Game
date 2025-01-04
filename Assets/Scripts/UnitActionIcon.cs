@@ -10,7 +10,7 @@ public class UnitActionIcon : MonoBehaviour
 
     public void InitializeData(KeyValuePair<UnitData, float> unit)
     {
-        _unitSprite.sprite = unit.Key.UnitBaseSprite;
+        _unitSprite.sprite = unit.Key.UnitStaticData.UnitBaseSprite;
         _unitActionValue.text = unit.Value.ToString();
     }
     

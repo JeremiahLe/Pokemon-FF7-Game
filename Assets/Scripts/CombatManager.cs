@@ -94,7 +94,7 @@ public class CombatManager : MonoBehaviour
         
         foreach (var unit in UnitObjectsInScene)
         {
-            unitActions.Append(unit.UnitData.UnitName).Append(" - ")
+            unitActions.Append(unit.UnitData.UnitStaticData.UnitName).Append(" - ")
                 .Append(unit.UnitData.ActionsTaken)
                 .Append(" Actions")
                 .AppendLine();
@@ -158,6 +158,12 @@ public class CombatManager : MonoBehaviour
     {
         CurrentRound++;
         CurrentRoundActionValue = _initialRoundActionValue;
+
+        foreach (var unit in UnitObjectsInScene)
+        {
+            if (unit.UnitData.AliveStatus == AliveStatus.Dead) continue;
+            unit.UnitData.UnitCurrentActionPoints++;
+        }
     }
 
     private IEnumerator AdvanceActionValues()
@@ -229,6 +235,8 @@ public class CombatManager : MonoBehaviour
             Debug.LogError("Can't find {0}", CurrentUnitAction);
             return;
         }
+
+        CurrentUnitAction.UnitCurrentActionPoints++;
         
         OnUnitActionStart?.Invoke(unitObject);
     }
@@ -303,7 +311,7 @@ public class CombatManager : MonoBehaviour
         var targetLog = new StringBuilder().Append("Targets:").AppendLine();
         foreach (var target in initialHoveredTargets)
         {
-            targetLog.Append(target.UnitData.UnitName).AppendLine();
+            targetLog.Append(target.UnitData.UnitStaticData.UnitName).AppendLine();
         }
         Debug.Log(targetLog);
 
@@ -377,6 +385,11 @@ public class CombatManager : MonoBehaviour
         OnUnitTargetingEnd?.Invoke();
         
         GetUnitObject(CurrentUnitAction).AnimationBasicAttackStart();
+
+        if (CurrentDamageSource is ISpecialAction specialAction)
+        {
+            CurrentUnitAction.UnitCurrentActionPoints -= specialAction.ActionPointCost;
+        }
     }
 
     private void HandleAttack()
@@ -431,6 +444,6 @@ public class CombatManager : MonoBehaviour
     private void HandleDeath(UnitObject deadUnit)
     {
         deadUnit.UnitData.AliveStatus = AliveStatus.Dead;
-        Debug.Log($"{deadUnit.UnitData.UnitName} has died!");
+        Debug.Log($"{deadUnit.UnitData.UnitStaticData.UnitName} has died!");
     }
 }

@@ -12,18 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d05acfa9b7e6c049a8bd0b1cad61075, type: 3}
   m_Name: Lily
   m_EditorClassIdentifier: 
-  <UnitName>k__BackingField: Lily
-  <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: 81e6bfa419ec675419d100d1be473e2a, type: 3}
-  <UnitBaseCombatClass>k__BackingField: 3
-  <UnitPrimaryResource>k__BackingField: 0
-  UseUniqueResource: 1
-  <Affinities>k__BackingField:
-  - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
-  <EquippableWeapons>k__BackingField: 00000000
-  BasicAttack: {fileID: 11400000, guid: 5b6ef6d282379644da5d5370b8fce9d1, type: 2}
-  SpecialActions:
-  - {fileID: 11400000, guid: 448e109cb91e360409307b1923762e9a, type: 2}
-  - {fileID: 11400000, guid: 993433c92337d7143a47baef5126d00a, type: 2}
+  <UnitStaticData>k__BackingField:
+    <UnitName>k__BackingField: Lily
+    <UnitBaseSprite>k__BackingField: {fileID: 21300000, guid: 81e6bfa419ec675419d100d1be473e2a, type: 3}
+    <UnitBaseCombatClass>k__BackingField: 3
+    <UnitPrimaryResource>k__BackingField: 0
+    UseUniqueResource: 0
+    <Affinities>k__BackingField:
+    - {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
+    <EquippableWeapons>k__BackingField: 00000000
+    BasicAttack: {fileID: 11400000, guid: 5b6ef6d282379644da5d5370b8fce9d1, type: 2}
+    SpecialActions:
+    - {fileID: 11400000, guid: 448e109cb91e360409307b1923762e9a, type: 2}
+    - {fileID: 11400000, guid: 993433c92337d7143a47baef5126d00a, type: 2}
   BaseMaxHealthStat:
     BaseStat: 32
     Stat: 1
@@ -42,3 +43,6 @@ MonoBehaviour:
   BaseSpecialDefenseStat:
     BaseStat: 3
     Stat: 5
+  BaseMaxActionPoints:
+    BaseStat: 5
+    Stat: 8

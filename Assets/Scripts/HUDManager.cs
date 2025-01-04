@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using System.Text;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class HUDManager : MonoBehaviour
 {

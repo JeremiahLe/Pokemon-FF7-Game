@@ -55,7 +55,7 @@ public class AttackCommand : Command
 
         if (!combatManager.CurrentUnitAction) return;
 
-        DamageSource = combatManager.CurrentUnitAction.BasicAttack;
+        DamageSource = combatManager.CurrentUnitAction.UnitStaticData.BasicAttack;
             
         base.OnCommandStart(commandWindow);
     }
@@ -90,13 +90,13 @@ public class ActionStartCommand : Command
             return;
         }
 
-        foreach (var action in combatManager.CurrentUnitAction.SpecialActions)
+        foreach (var action in combatManager.CurrentUnitAction.UnitStaticData.SpecialActions)
         {
             var actionButton = Object.Instantiate(commandWindow._commandButtonPrefab, commandWindow._commandsTransform);
             actionButton.SetActive(true);
             var commandButtonComponent = actionButton.AddComponent<CommandWindowButton>();
 
-            commandButtonComponent.SetCommand(new ActionConfirmCommand(CommandType.ActionConfirm, DoesShowCommandButtons, action));
+            commandButtonComponent.SetCommand(new ActionConfirmCommand(CommandType.ActionConfirm, DoesShowCommandButtons, action), combatManager.CurrentUnitAction);
             commandButtonComponent.AssignButtonEvent(commandWindow);
             commandWindow.TemporaryCommandButtons.Add(actionButton);
         }

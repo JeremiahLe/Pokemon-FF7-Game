@@ -19,7 +19,7 @@ public interface IBasicAttack : IDealsDamage
 
 public interface ISpecialAction : IDealsDamage
 {
-    
+    public abstract int ActionPointCost { get; }
 }
 
 public static class DealsDamageStaticHelpers

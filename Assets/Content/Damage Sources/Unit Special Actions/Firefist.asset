@@ -10,16 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4c1fff0517c4194c8b38ea8037619f3, type: 3}
-  m_Name: Windgaze
+  m_Name: Firefist
   m_EditorClassIdentifier: 
-  <ActionName>k__BackingField: Windgaze
-  <ActionDescription>k__BackingField: Increase the user's {stat} by {amount}.
-  <DamageType>k__BackingField: 3
-  <DamageScalars>k__BackingField: []
+  <ActionName>k__BackingField: Firefist
+  <ActionDescription>k__BackingField: Deals Fire Physical damage equal to 150% Physical
+    Attack to a single target.
+  <DamageType>k__BackingField: 0
+  <DamageScalars>k__BackingField:
+  - ScalingStat: 2
+    ScalingMultiplier: 150
   <TargetingData>k__BackingField:
     TargetingType: 0
-    TargetRestrictions: 1
+    TargetRestrictions: 0
     TargetCount: 1
     CanTargetDead: 0
-  <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
+  <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: a145f53243e33b2418c72ccc8aec9b4e, type: 2}
   <ActionPointCost>k__BackingField: 1

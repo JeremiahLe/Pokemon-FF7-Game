@@ -8,6 +8,9 @@ public class CommandWindowButton : MonoBehaviour
 
     private TextMeshProUGUI _buttonText;
     private Button _button;
+    
+    private UnitData _currentUnit;
+    private ISpecialAction _specialAction;
 
     public void OnEnable()
     {
@@ -15,12 +18,22 @@ public class CommandWindowButton : MonoBehaviour
         _button = GetComponent<Button>();
     }
 
-    public void SetCommand(Command command)
+    private void Update()
+    {
+        if (!_currentUnit) return;
+        if (_specialAction == null) return;
+
+        _button.enabled = _currentUnit.UnitCurrentActionPoints >= _specialAction.ActionPointCost;
+    }
+
+    public void SetCommand(Command command, UnitData unitData = null)
     {
         Command = command;
-
+        _currentUnit = unitData;
+        
         if (Command.DamageSource == null) return;
         SetButtonText(Command.DamageSource.ActionName);
+        _specialAction = (ISpecialAction)Command.DamageSource;
     }
 
     public void AssignButtonEvent(CommandWindow commandWindow)

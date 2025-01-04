@@ -43,7 +43,7 @@ public class UnitObject : MonoBehaviour
             
         if (UnitData != null)
         {
-            SpriteRenderer.sprite = UnitData.UnitBaseSprite;
+            SpriteRenderer.sprite = UnitData.UnitStaticData.UnitBaseSprite;
         }
     }
 
@@ -74,13 +74,13 @@ public class UnitObject : MonoBehaviour
     {
         UnitData = Instantiate(UnitData);
 
-        UnitData.BasicAttack = Instantiate(UnitData.BasicAttack);
-        var specialActions = UnitData.SpecialActions.Select(Instantiate).ToList();
-        UnitData.SpecialActions = specialActions;
+        UnitData.UnitStaticData.BasicAttack = Instantiate(UnitData.UnitStaticData.BasicAttack);
+        var specialActions = UnitData.UnitStaticData.SpecialActions.Select(Instantiate).ToList();
+        UnitData.UnitStaticData.SpecialActions = specialActions;
         UnitData.InitializeData();
         
         var allyOrEnemy = unitSideOfField == UnitOrientation.Left ? "Ally" : "Enemy";
-        gameObject.name = $"{UnitData.UnitName} - {allyOrEnemy}";
+        gameObject.name = $"{UnitData.UnitStaticData.UnitName} - {allyOrEnemy}";
         InitializeEvents();
     }
 

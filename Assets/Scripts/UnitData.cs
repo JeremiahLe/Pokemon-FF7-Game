@@ -5,8 +5,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "New Unit Data", menuName = "Unit/UnitData")]
-public class UnitData : ScriptableObject
+public class UnitStaticData
 {
     [field: SerializeField, Title("ID")] public string UnitName { get; private set; }
     
@@ -24,6 +23,13 @@ public class UnitData : ScriptableObject
 
     [field: SerializeField] public BasicAttack BasicAttack;
     [field: SerializeField] public List<UnitSpecialAction> SpecialActions;
+}
+
+[System.Serializable]
+[CreateAssetMenu(fileName = "New Unit Data", menuName = "Unit/UnitData")]
+public class UnitData : ScriptableObject
+{
+    [field: SerializeField] public UnitStaticData UnitStaticData { get; private set; }
     
     public float CurrentActionValue
     {
@@ -55,6 +61,13 @@ public class UnitData : ScriptableObject
     
     public AliveStatus AliveStatus { get; internal set; }
 
+    public int UnitCurrentActionPoints
+    {
+        get => _unitCurrentActionPoints;
+        set => _unitCurrentActionPoints = Mathf.Clamp(value, 0, (int)BaseMaxActionPoints.CurrentTotalStat);
+    }
+    private int _unitCurrentActionPoints;
+
     public List<StatProperty> Stats { get; private set; } = new List<StatProperty>();
 
     [Header("Combat")]
@@ -64,13 +77,14 @@ public class UnitData : ScriptableObject
     public StatProperty BaseSpecialAttackStat;
     public StatProperty BasePhysicalDefenseStat;
     public StatProperty BaseSpecialDefenseStat;
+    public StatProperty BaseMaxActionPoints;
     
     private void OnValidate()
     {
-        if (!UseUniqueResource)
-        {
-            UnitPrimaryResource = UnitPrimaryResourceClass.GetUnitPrimaryResourceByClass(UnitBaseCombatClass);
-        }
+        // if (!UnitStaticData.UseUniqueResource)
+        // {
+        //     UnitPrimaryResource = UnitPrimaryResourceClass.GetUnitPrimaryResourceByClass(UnitBaseCombatClass);
+        // }
     }
 
     public void InitializeData()
@@ -154,7 +168,7 @@ public class StatProperty
 
 public enum Stat
 {
-    CurrentHealth, MaxHealth, PhysicalAttack, SpecialAttack, PhysicalDefense, SpecialDefense, Speed
+    CurrentHealth, MaxHealth, PhysicalAttack, SpecialAttack, PhysicalDefense, SpecialDefense, Speed, CurrentActionPoints, MaxActionPoints
 }
 
 public enum AliveStatus

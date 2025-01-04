@@ -27,3 +27,4 @@ MonoBehaviour:
     TargetCount: 1
     CanTargetDead: 0
   <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
+  <ActionPointCost>k__BackingField: 2
