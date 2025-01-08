@@ -13,6 +13,7 @@ public class UnitIcon : MonoBehaviour
     [SerializeField] private GameObject _actionPointIconPrefab;
     [SerializeField] private Transform _actionPointHolder;
     [field: SerializeField] public ResourceBar HealthBar { get; private set; }
+    public Image UnitIconSprite => _unitIconSprite;
 
     private static readonly int TextDamageReceived = Animator.StringToHash("TextDamageReceived");
 

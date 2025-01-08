@@ -355,9 +355,10 @@ public class CombatManager : MonoBehaviour
         switch (targetingData.TargetingType)
         {
             case TargetingType.Single:
-                return targetingData.TargetRestrictions == TargetRestrictions.Any 
-                    ? GetTargetList(new TargetingData(TargetingType.Single, TargetRestrictions.Enemies, 1, false), unitObject).GetRange(0, 1)
-                    : new List<UnitObject> { potentialTargets.FirstOrDefault() };
+                if (targetingData.TargetRestrictions != TargetRestrictions.Any) return new List<UnitObject> { potentialTargets.FirstOrDefault() };
+                var targetList = GetTargetList(new TargetingData(TargetingType.Single, TargetRestrictions.Enemies, 1, false), unitObject);
+                if (targetList.Count > 0) targetList = targetList.GetRange(0, 1);
+                return targetList;
 
             case TargetingType.MultiSelect:
                 break;
@@ -423,7 +424,11 @@ public class CombatManager : MonoBehaviour
         if (!CurrentUnitAction) return 0f;
         if (CurrentDamageSource == null) return 0f;
 
-        var damageMultiplier = CalculateAffinityWeakness(CurrentDamageSource.ActionAffinityClass, target.UnitData.UnitStaticData.Affinities);
+        var stabMultiplier = CurrentUnitAction.UnitStaticData.Affinities.
+            Where(x => x.affinityType == CurrentDamageSource.ActionAffinityClass.affinityType).ToList().Count > 0 
+            ? 0.25f 
+            : 0f;
+        var damageMultiplier = CalculateAffinityWeakness(CurrentDamageSource.ActionAffinityClass, target.UnitData.UnitStaticData.Affinities) + stabMultiplier;
         var resistanceMultiplier = 1f;
         
         var scaledDamage = CurrentUnitAction.GetScaledDamageAmount(CurrentDamageSource) * damageMultiplier;
@@ -466,7 +471,7 @@ public class CombatManager : MonoBehaviour
         UpdateActionOrder();
     }
 
-    private void HandleDeath(UnitObject deadUnit)
+    public void HandleDeath(UnitObject deadUnit)
     {
         deadUnit.UnitData.AliveStatus = AliveStatus.Dead;
         deadUnit.BoundUnitIcon.UnitIconSprite.color = Color.red;

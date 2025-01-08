@@ -30,6 +30,13 @@ public class UnitObject : MonoBehaviour
     public UnitOrientation unitSideOfField;
     [field: SerializeField] public UnitData UnitData { get; private set; }
 
+    [Title("Helpers")]
+    [Button]
+    private void KillUnit()
+    {
+        CombatManagerSingleton.CombatManager().HandleDeath(this);
+    }
+
     private void OnValidate()
     {
         ValidateEditorComponents();
