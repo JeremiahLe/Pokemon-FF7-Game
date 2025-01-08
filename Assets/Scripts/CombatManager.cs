@@ -423,11 +423,36 @@ public class CombatManager : MonoBehaviour
         if (!CurrentUnitAction) return 0f;
         if (CurrentDamageSource == null) return 0f;
 
-        var finalDamage = CurrentUnitAction.GetScaledDamageAmount(CurrentDamageSource) - target.UnitData.GetScaledDefensiveAmount(CurrentDamageSource);
+        var damageMultiplier = CalculateAffinityWeakness(CurrentDamageSource.ActionAffinityClass, target.UnitData.UnitStaticData.Affinities);
+        var resistanceMultiplier = 1f;
+        
+        var scaledDamage = CurrentUnitAction.GetScaledDamageAmount(CurrentDamageSource) * damageMultiplier;
+        var scaledResistance = target.UnitData.GetScaledDefensiveAmount(CurrentDamageSource) * resistanceMultiplier;
+        var finalDamage = scaledDamage - scaledResistance;
 
-        if (finalDamage <= 0) return -1f; // TODO: Do not return 1 if immune
+        if (finalDamage <= 0) return -1f; // TODO: Do not return -1 if immune
         
         return Mathf.Round(Mathf.Abs(finalDamage)) * -1f;
+    }
+    
+    public float CalculateAffinityWeakness(AffinityClass damageAffinity, List<AffinityClass> targetAffinities)
+    {
+        var damageMultiplier = 1f;
+        foreach (var affinity in targetAffinities)
+        {
+            if (affinity.AffinityWeaknesses.Contains(damageAffinity.affinityType))
+            {
+                damageMultiplier += 0.5f;
+            }
+            else if (affinity.AffinityResistances.Contains(damageAffinity.affinityType))
+            {
+                damageMultiplier -= 0.5f;
+            }
+        }
+
+        var clampedAmount = Mathf.Clamp(damageMultiplier, 0.25f, 2f);
+        Debug.Log($"Affinity weakness multiplier: {clampedAmount}");
+        return clampedAmount;
     }
 
     private void ResetAttack()
@@ -444,6 +469,7 @@ public class CombatManager : MonoBehaviour
     private void HandleDeath(UnitObject deadUnit)
     {
         deadUnit.UnitData.AliveStatus = AliveStatus.Dead;
+        deadUnit.BoundUnitIcon.UnitIconSprite.color = Color.red;
         Debug.Log($"{deadUnit.UnitData.UnitStaticData.UnitName} has died!");
     }
 }
