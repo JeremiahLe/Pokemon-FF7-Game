@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315291d1a537a9f40ab73cc7b46492e0, type: 3}
+  m_Name: Windgaze Speed Buff
+  m_EditorClassIdentifier: 
+  <EffectName>k__BackingField: Windspeed
+  <EffectDescription>k__BackingField: 
+  <EffectNeutrality>k__BackingField: 0
+  <EffectTriggerTime>k__BackingField: 2
+  <EffectDuration>k__BackingField: 0
+  <EffectTriggerChance>k__BackingField: 100
+  <StatToChange>k__BackingField: 6
+  <Amount>k__BackingField: 3
+  <IsFlatAmount>k__BackingField: 1

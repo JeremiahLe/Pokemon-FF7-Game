@@ -20,6 +20,7 @@ public interface IBasicAttack : IDealsDamage
 public interface ISpecialAction : IDealsDamage
 {
     public abstract int ActionPointCost { get; }
+    public List<ActionEffect> ActionEffects { get; }
 }
 
 public static class DealsDamageStaticHelpers

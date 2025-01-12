@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Ability Trigger", menuName = "Ability Triggers")]
 public abstract class IAbilityTrigger : ScriptableObject
 {
     public int abilityTriggerDelay = 150;

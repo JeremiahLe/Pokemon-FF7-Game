@@ -78,6 +78,8 @@ public class UnitData : ScriptableObject
     public StatProperty BasePhysicalDefenseStat;
     public StatProperty BaseSpecialDefenseStat;
     public StatProperty BaseMaxActionPoints;
+
+    public List<ModifierEffect> ModifierEffects { get; private set; } = new List<ModifierEffect>();
     
     private void OnValidate()
     {
@@ -137,6 +139,84 @@ public class UnitData : ScriptableObject
                 return 0f;
         }
     }
+
+    public void AddAndApplyModifier(ModifierEffect modifierEffect)
+    {
+        ModifierEffects.Add(modifierEffect);
+        modifierEffect.ApplyModifier(this);
+    }
+
+    public void ModifyStatProperty(Stat statToChange, float amount)
+    {
+        switch (statToChange)
+        {
+            case Stat.CurrentHealth:
+                CurrentHealth += amount;
+                break;
+            
+            case Stat.MaxHealth:
+                BaseMaxHealthStat.UpdateStat(amount);
+                break;
+            
+            case Stat.PhysicalAttack:
+                BasePhysicalAttackStat.UpdateStat(amount);
+                break;
+            
+            case Stat.SpecialAttack:
+                BaseSpecialAttackStat.UpdateStat(amount);
+                break;
+            
+            case Stat.PhysicalDefense:
+                BasePhysicalDefenseStat.UpdateStat(amount);
+                break;
+            
+            case Stat.SpecialDefense:
+                BaseSpecialDefenseStat.UpdateStat(amount);
+                break;
+            
+            case Stat.Speed:
+                BaseSpeedStat.UpdateStat(amount);
+                break;
+            
+            case Stat.CurrentActionPoints:
+                UnitCurrentActionPoints += (int)amount;
+                break;
+            
+            case Stat.MaxActionPoints:
+                BaseMaxHealthStat.UpdateStat(amount);
+                break;
+        }
+    }
+
+    public StatProperty GetStatProperty(Stat stat)
+    {
+        switch (stat)
+        {
+            case Stat.MaxHealth:
+                return BaseMaxHealthStat;
+            
+            case Stat.PhysicalAttack:
+                return BasePhysicalAttackStat;
+            
+            case Stat.SpecialAttack:
+                return BaseSpecialAttackStat;
+            
+            case Stat.PhysicalDefense:
+                return BasePhysicalDefenseStat;
+            
+            case Stat.SpecialDefense:
+                return BaseSpecialDefenseStat;
+            
+            case Stat.Speed:
+                return BaseSpeedStat;
+
+            case Stat.MaxActionPoints:
+                return BaseMaxActionPoints;
+            
+            default:
+                return BaseMaxHealthStat;
+        }
+    }
 }
 
 [Serializable]
@@ -159,10 +239,23 @@ public class StatProperty
     }
     private float _currentTotalStat;
 
+    public float CurrentBonusStat
+    {
+        get => _currentBonusStat;
+        internal set => _currentBonusStat = Mathf.Clamp(value, 1, value);
+    }
+    private float _currentBonusStat;
+
     public void SetAllStats()
     {
         CurrentBaseStat = BaseStat;
-        CurrentTotalStat = CurrentBaseStat;
+        CurrentTotalStat = CurrentBaseStat + CurrentBonusStat;
+    }
+
+    public void UpdateStat(float amount)
+    {
+        CurrentBonusStat += amount;
+        CurrentTotalStat = CurrentBonusStat + CurrentBaseStat;
     }
 }
 

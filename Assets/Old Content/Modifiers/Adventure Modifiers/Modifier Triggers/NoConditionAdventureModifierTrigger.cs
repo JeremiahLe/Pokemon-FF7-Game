@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 
 [Serializable]
-[CreateAssetMenu(fileName = "NoConditionAdventureModifierTrigger", menuName = "AdventureModifierTriggers/NoConditionAdventureModifierTrigger")]
 public class NoConditionAdventureModifierTrigger : IAbilityTrigger
 {
     public Modifier adventureModifier;

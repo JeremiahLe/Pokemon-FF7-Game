@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Windgaze
   m_EditorClassIdentifier: 
   <ActionName>k__BackingField: Windgaze
-  <ActionDescription>k__BackingField: Increase the user's {stat} by {amount}.
+  <ActionDescription>k__BackingField: Increase the user's Speed by 3.
   <DamageType>k__BackingField: 3
   <DamageScalars>k__BackingField: []
   <TargetingData>k__BackingField:
@@ -23,3 +23,5 @@ MonoBehaviour:
     CanTargetDead: 0
   <ActionAffinityClass>k__BackingField: {fileID: 11400000, guid: 673b65278f3c0f94e82231386b6004bd, type: 2}
   <ActionPointCost>k__BackingField: 1
+  <ActionEffects>k__BackingField:
+  - {fileID: 11400000, guid: a0b22051cdaffd241922032a8739095e, type: 2}

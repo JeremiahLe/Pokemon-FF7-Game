@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,11 +31,14 @@ public class CombatManager : MonoBehaviour
     public static event Action<List<UnitObject>> OnUnitTargetingBegin;
     public static event Action OnUnitTargetingEnd;
     public static event Action<IDealsDamage> OnDamageSourceSet;
+    public static event Action<EffectTriggerTime> OnEffectTriggerTime;
     public List<UnitObject> UnitObjectsInScene { get; private set; }
     public Dictionary<UnitData, float> CurrentActionOrder { get; private set; }
     public UnitData CurrentUnitAction { get; private set; }
     public Command CurrentCommand { get; private set; }
     public IDealsDamage CurrentDamageSource { get; private set; }
+
+    public List<Event> CurrentlyQueuedEvents = new List<Event>();
 
     [Tooltip("Determines a unit's place in the action order.")] private int _defaultActionGauge = 250;
     [Tooltip("Determines the the action value allowed before a round passes.")] private int _initialRoundActionValue = 150;
@@ -246,7 +250,7 @@ public class CombatManager : MonoBehaviour
         if (!CurrentUnitAction) return;
         CurrentUnitAction.ActionsTaken++;
         
-        CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat);
+        CurrentUnitAction.CurrentActionValue = Mathf.Round(_defaultActionGauge / CurrentUnitAction.BaseSpeedStat.CurrentTotalStat) + 50;
     }
 
     private void AssignCommandType(Command command)
@@ -393,7 +397,7 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    private void HandleAttack()
+    private async void HandleAttack()
     {
         // Check accuracy
         // Apply pre attack
@@ -408,17 +412,42 @@ public class CombatManager : MonoBehaviour
             }
         }
 
-        // Apply post attack
         foreach (var dead in deadTargets)
         {
             HandleDeath(dead);
         }
+        
+        // Apply post attack
+        await TriggerActionEffectsFromSpecialAction(CurrentDamageSource);
         
         ResetAttack();
         UnitEndAction();
         UpdateActionOrder();
     }
 
+    private async Task<int> TriggerActionEffectsFromSpecialAction(IDealsDamage dealsDamage)
+    {
+        if (dealsDamage is ISpecialAction specialAction)
+        {
+            await TriggerActionEffects(specialAction.ActionEffects, EffectTriggerTime.AfterAttack);
+        }
+
+        return 1;
+    }
+
+    private async Task<int> TriggerActionEffects(List<ActionEffect> actionEffects, EffectTriggerTime triggerTime)
+    {
+        foreach (var effect in actionEffects)
+        {
+            await Task.Delay(100);
+            if (effect.EffectTriggerTime != triggerTime) continue;
+            await effect.TriggerEffects();
+        }
+        
+        await Task.Delay(100);
+        return 1;
+    }
+    
     private float CalculateDamage(UnitObject target)
     {
         if (!CurrentUnitAction) return 0f;
@@ -435,7 +464,7 @@ public class CombatManager : MonoBehaviour
         var scaledResistance = target.UnitData.GetScaledDefensiveAmount(CurrentDamageSource) * resistanceMultiplier;
         var finalDamage = scaledDamage - scaledResistance;
 
-        if (finalDamage <= 0) return -1f; // TODO: Do not return -1 if immune
+        if (finalDamage < 1) return -1f; // TODO: Do not return -1 if immune
         
         return Mathf.Round(Mathf.Abs(finalDamage)) * -1f;
     }
@@ -467,6 +496,7 @@ public class CombatManager : MonoBehaviour
 
     private void PassAction()
     {
+        CurrentUnitAction.UnitCurrentActionPoints++;
         UnitEndAction();
         UpdateActionOrder();
     }

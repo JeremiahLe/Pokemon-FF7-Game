@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using System;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Item", menuName = "Items")]
 public class Item : ScriptableObject
 {
     public enum ItemType { Consumable, AscensionMaterial }

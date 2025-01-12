@@ -15,7 +15,8 @@ public class UnitSpecialAction : ScriptableObject, ISpecialAction
     [field: SerializeField] public TargetingData TargetingData { get; private set;}
     [field: SerializeField] public AffinityClass ActionAffinityClass { get; private set;}
     [field: SerializeField] public int ActionPointCost { get; private set; }
-    
+    [field: SerializeField] public List<ActionEffect> ActionEffects { get; private set; }
+
     [Title("Helpers"), Button("Autofill description")]
     public void Button()
     {

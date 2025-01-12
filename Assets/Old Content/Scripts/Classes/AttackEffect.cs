@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine.Serialization;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Monster Attack Effect", menuName = "Monster Attack Effects")]
 public class AttackEffect : ScriptableObject
 {
     [Title("Effect Initialization Enumerators")]

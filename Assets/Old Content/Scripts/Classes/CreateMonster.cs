@@ -1443,8 +1443,8 @@ public class CreateMonster : MonoBehaviour
     public void CreateDamageEffectPopup(float damage, string damageOrHeal)
     {
         GameObject effectPopup = Instantiate(monsterStatusTextObjectCanvas, popupPosTransform);
-        effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
-        effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
+        //effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
+        //effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
 
         float amount = damage;
 
@@ -1468,8 +1468,8 @@ public class CreateMonster : MonoBehaviour
     public void CreateStatusEffectPopup(AttackEffect.StatToChange stat, AttackEffect.StatChangeType statChangeType)
     {
         GameObject effectPopup = Instantiate(monsterStatusTextObjectCanvas, popupPosTransform);
-        effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
-        effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
+        //effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
+        //effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
         effectPopup.GetComponentInChildren<Animator>().speed = 1.25f;
 
         if (statChangeType == AttackEffect.StatChangeType.Debuff)
@@ -1488,8 +1488,8 @@ public class CreateMonster : MonoBehaviour
     {
         GameObject effectPopup = Instantiate(monsterStatusTextObjectCanvas, popupPosTransform);
         monsterAttackManager.soundEffectManager.PlaySoundEffect(monsterAttackManager.soundEffectManager.buffSound);
-        effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
-        effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
+        //effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
+        //effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
         effectPopup.GetComponentInChildren<TextMeshProUGUI>().text = ($"{condition}!");
 
         if (statChangeType == AttackEffect.StatChangeType.Debuff)
@@ -1511,8 +1511,8 @@ public class CreateMonster : MonoBehaviour
     {
         GameObject effectPopup = Instantiate(monsterStatusTextObjectCanvas, popupPosTransformHigher);
         monsterAttackManager.soundEffectManager.PlaySoundEffect(monsterAttackManager.soundEffectManager.buffSound);
-        effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
-        effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
+        //effectPopup.GetComponentInChildren<PopupScript>().instantiated = true;
+        //effectPopup.GetComponentInChildren<PopupScript>().parentObj = effectPopup;
         effectPopup.GetComponentInChildren<TextMeshProUGUI>().text = ($"{condition}!");
 
         if (statChangeType == AttackEffect.StatChangeType.Debuff)

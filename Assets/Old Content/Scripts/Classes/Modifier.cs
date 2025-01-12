@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using static AttackEffect;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Modifier", menuName = "Modifiers")]
 public class Modifier : ScriptableObject
 {
     [Header("Modifier Object Data")]

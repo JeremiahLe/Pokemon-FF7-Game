@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-[CreateAssetMenu(fileName = "New Adventure", menuName = "Adventures")]
 public class Adventure : ScriptableObject
 {
     [Header("Adventure Init")]

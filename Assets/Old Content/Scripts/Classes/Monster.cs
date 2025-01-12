@@ -6,7 +6,6 @@ using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "New Monster", menuName = "Monster")]
 public class Monster : ScriptableObject
 {
     // The monster's name and sprite

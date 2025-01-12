@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class HUDManager : MonoBehaviour
@@ -14,7 +15,7 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private GameObject _unitActionTimelineHolder;
 
     [Header("Combat")] 
-    [SerializeField] private GameObject _combatPopupPrefab;
+    [SerializeField] private PopupScript _combatPopupPrefab;
     
     [Header("Other Components")]
     [SerializeField] private UnitHoverIcon _unitHoverIcon;
@@ -176,6 +177,8 @@ public class HUDManager : MonoBehaviour
 
     private void SpawnCombatPopup(UnitObject unitObject, float amount)
     {
-        //
+        var pos = unitObject.gameObject.transform.position + Vector3.up * (0.005f * unitObject.SpriteRenderer.sprite.pivot.y);
+        var popup = Instantiate(_combatPopupPrefab, pos, quaternion.identity);
+        popup.SetTextFromAmount(amount);
     }
 }
